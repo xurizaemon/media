@@ -58,18 +58,18 @@ function media_field_widget_info() {
  */
 function media_field_formatter_info() {
   $formatters = array(
-    'media' => array(
-      'label' => t('Media'),
-      'field types' => array('media'),
-      'settings' => array('file_view_mode' => 'default'),
+    'media_large_icon' => array(
+      'label' => t('Large filetype icon'),
+      'field types' => array('file'),
     ),
     // This was originally used when media entities contained file fields. The
     // current file entity architecture no longer needs this, but people may
     // have used this formatter for other file fields on their website.
     // @todo Some day, remove this.
-    'media_large_icon' => array(
-      'label' => t('Large filetype icon'),
-      'field types' => array('file'),
+    'media' => array(
+      'label' => t('Media'),
+      'field types' => array('media'),
+      'settings' => array('file_view_mode' => 'default'),
     ),
   );
 
@@ -152,8 +152,8 @@ function media_field_prepare_view($entity_type, $entities, $field, $instances, $
  * Implement hook_field_formatter_view().
  */
 function media_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
-  // @todo Legacy support for the extra formatter added to file fields. See
-  //   media_field_formatter_info().
+  $element = array();
+
   if ($display['type'] == 'media_large_icon') {
     foreach ($items as $delta => $item) {
       $element[$delta] = array(
@@ -161,14 +161,19 @@ function media_field_formatter_view($entity_type, $entity, $field, $instance, $l
         '#file' => $item,
       );
     }
-    return $element;
   }
 
-  $files = array();
-  foreach ($items as $delta => $item) {
-    $files[$item['fid']] = $item['file'];
+  // Legacy support for the extra formatter added to file fields. See
+  // media_field_formatter_info().
+  if ($display['type'] == 'media') {
+    $files = array();
+    foreach ($items as $delta => $item) {
+      $files[$item['fid']] = $item['file'];
+    }
+    $element = file_view_multiple($files, $display['settings']['file_view_mode'], 0, $langcode);
   }
-  return file_view_multiple($files, $display['settings']['file_view_mode'], 0, $langcode);
+
+  return $element;
 }
 
 /**
