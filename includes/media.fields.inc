@@ -33,6 +33,28 @@ function media_field_is_empty($item, $field) {
 }
 
 /**
+ * Implements hook_field_instance_settings_form().
+ */
+function media_field_instance_settings_form($field, $instance) {
+  $settings = $instance['settings'];
+
+  // Make the extension list a little more human-friendly by comma-separation.
+  $extensions = str_replace(' ', ', ', $settings['file_extensions']);
+  $form['file_extensions'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Allowed file extensions for uploaded files'),
+    '#default_value' => $extensions,
+    '#description' => t('Separate extensions with a space or comma and do not include the leading dot.'),
+    '#element_validate' => array('_file_generic_settings_extensions'),
+    // By making this field required, we prevent a potential security issue
+    // that would allow files of any type to be uploaded.
+    '#required' => TRUE,
+  );
+
+  return $form;
+}
+
+/**
  * Implement hook_field_widget_info().
  */
 function media_field_widget_info() {
@@ -184,21 +206,6 @@ function media_field_widget_settings_form($field, $instance) {
   $widget = $instance['widget'];
   $settings = $widget['settings'];
   $form = array();
-
-  if ($field['type'] == 'media') {
-    // Make the extension list a little more human-friendly by comma-separation.
-    $extensions = str_replace(' ', ', ', $instance['settings']['file_extensions']);
-    $form['file_extensions'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Allowed file extensions for uploaded files'),
-      '#default_value' => $extensions,
-      '#description' => t('Separate extensions with a space or comma and do not include the leading dot.'),
-      '#element_validate' => array('_file_generic_settings_extensions'),
-      // By making this field required, we prevent a potential security issue
-      // that would allow files of any type to be uploaded.
-      '#required' => TRUE,
-    );
-  }
 
   // Setup type selection form
   $types = media_type_get_types();
