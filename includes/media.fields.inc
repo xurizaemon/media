@@ -192,7 +192,10 @@ function media_field_formatter_view($entity_type, $entity, $field, $instance, $l
     foreach ($items as $delta => $item) {
       $files[$item['fid']] = $item['file'];
     }
-    $element = file_view_multiple($files, $display['settings']['file_view_mode'], 0, $langcode);
+
+    if (!empty($files)) {
+      $element = file_view_multiple($files, $display['settings']['file_view_mode'], 0, $langcode);
+    }
   }
 
   return $element;
