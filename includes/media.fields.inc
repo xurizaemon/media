@@ -278,9 +278,9 @@ function media_field_widget_form(&$form, &$form_state, $field, $instance, $langc
       'global' => array(
         'types' => array_filter($widget_settings['allowed_types']),
         'schemes' => $widget_settings['allowed_schemes'],
-        'file_directory' => isset($field_settings['file_directory']) ? $field_settings['file_directory'] : NULL,
+        'file_directory' => isset($field_settings['file_directory']) ? $field_settings['file_directory'] : '',
         'file_extensions' => isset($field_settings['file_extensions']) ? $field_settings['file_extensions'] : media_variable_get('file_extensions'),
-        'max_filesize' => isset($field_settings['max_filesize']) ? $field_settings['max_filesize'] : NULL,
+        'max_filesize' => isset($field_settings['max_filesize']) ? $field_settings['max_filesize'] : 0,
         'uri_scheme' => !empty($field['settings']['uri_scheme']) ? $field['settings']['uri_scheme'] : file_default_scheme(),
       ),
     ),
