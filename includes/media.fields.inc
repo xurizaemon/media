@@ -18,6 +18,8 @@ function media_field_info() {
       ),
       'default_widget' => 'media_generic',
       'default_formatter' => 'media_large',
+      'property_type' => 'field_item_file',
+      'property_callbacks' => array('entity_metadata_field_file_callback'),
     ),
   );
 }
