@@ -680,10 +680,11 @@ if (!function_exists('file_uri_to_object')) {
  */
 function media_library() {
   $path = drupal_get_path('module', 'media');
+  $info = system_get_info('module', 'media');
 
   $common = array(
     'website' => 'http://drupal.org/project/media',
-    'version' => '7.x',
+    'version' => !empty($info['version']) ? $info['version'] : '7.x-1.x',
   );
 
   /**
