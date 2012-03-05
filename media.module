@@ -29,6 +29,26 @@ require_once (dirname(__FILE__) . '/includes/media.filter.inc');
 /* ***************************************** */
 
 /**
+ * Implements hook_hook_info().
+ */
+function media_hook_info() {
+  $hooks = array(
+    'media_display_types',
+    'media_display_types_alter',
+    'media_parse',
+    'media_operations',
+    'media_browser_plugin_info',
+    'media_browser_plugin_view',
+    'media_browser_plugins_alter',
+    'media_browser_params_alter',
+    'media_wysiwyg_allowed_view_modes_alter',
+    'media_format_form_prepare_alter',
+  );
+
+  return array_fill_keys($hooks, array('group' => 'media'));
+}
+
+/**
  * Implements hook_help().
  */
 function media_help($path, $arg) {
@@ -250,7 +270,7 @@ function media_admin_paths() {
 }
 
 /**
- * Implement hook_permission().
+ * Implements hook_permission().
  */
 function media_permission() {
   return array(
@@ -439,60 +459,6 @@ function media_page_alter(&$page) {
  */
 function media_element_info_alter(&$types) {
   $types['text_format']['#pre_render'][] = 'media_pre_render_text_format';
-}
-
-/**
- * Implements hook_media_display_types().
- *
- * This is used to display media in different ways on the admin section.
- * Perhaps should be merged in with the browser display.
- */
-function media_media_display_types() {
-  $path = drupal_get_path('module', 'media');
-  $display_types = array();
-
-  $display_types['list'] = array(
-    'title' => t('List'),
-    'description' => t('Display as a list.'),
-    'icon' => $path . '/images/display-list.png',
-    'icon_active' => $path . '/images/display-list-active.png',
-    'callback' => 'media_admin_list',
-    'file' => drupal_get_path('module', 'media') . '/includes/media.admin.inc',
-  );
-
-  $display_types['thumbnails'] = array(
-    'title' => t('Thumbnails'),
-    'description' => t('Display as thumbnails.'),
-    'icon' => $path . '/images/display-thumbnails.png',
-    'icon_active' => $path . '/images/display-thumbnails-active.png',
-    'callback' => 'media_admin_thumbnails',
-    'file' => drupal_get_path('module', 'media') . '/includes/media.admin.inc',
-  );
-
-  return $display_types;
-}
-
-/**
- * Implements hook_media_operations().
- */
-function media_media_operations() {
-  $operations = array(
-    'delete' => array(
-      'label' => t('Delete'),
-      'callback' => NULL,
-    ),
-    'edit' => array(
-      'label' => t('Edit'),
-      'callback' => NULL,
-      'redirect' => 'media/%fids/multiedit'
-    ),
-  );
-
-  if (!module_exists('multiform')) {
-    // If the multiform module is not installed, do not show this option.
-    unset($operations['edit']);
-  }
-  return $operations;
 }
 
 /**
