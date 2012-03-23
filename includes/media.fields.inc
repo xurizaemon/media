@@ -10,7 +10,7 @@
 function media_field_info() {
   return array(
     'media' => array(
-      'label' => t('Multimedia asset'),
+      'label' => t('Multimedia asset (deprecated)'),
       'description' => t('This field stores a reference to a multimedia asset.'),
       'settings' => array(),
       'instance_settings' => array(
