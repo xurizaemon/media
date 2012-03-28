@@ -179,7 +179,6 @@ function media_admin_thumbnails(&$parent_form) {
 
   $fids = $query->execute()->fetchCol();
   $files = file_load_multiple($fids);
-  $files = array();
 
   // Hide the operations form if there are no files to operate on.
   $parent_form['options']['#access'] &= !empty($files);
