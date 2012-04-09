@@ -198,7 +198,6 @@ function media_admin_thumbnails(&$parent_form) {
 
     foreach ($files as $file) {
       $preview = media_get_thumbnail_preview($file, TRUE);
-      if (!isset($preview['#file'])) { dpm($file); }
       $form['files'][$file->fid] = array(
         '#type' => 'checkbox',
         '#title' => '',
