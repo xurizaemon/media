@@ -4,3 +4,4 @@ package = Media
 core = 7.x
 dependencies[] = field
 dependencies[] = ctools
+files[] = file_entity.field.inc
