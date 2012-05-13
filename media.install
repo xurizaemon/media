@@ -96,15 +96,15 @@ function media_schema() {
         'default' => 0,
       ),
     ),
+    'primary key' => array('fid'),
+    'indexes' => array(
+      'timestamp' => array('timestamp'),
+    ),
     'foreign keys' => array(
       'file_managed' => array(
         'table' => 'file_managed',
         'columns' => array('fid' => 'fid'),
       ),
-    ),
-    'primary key' => array('fid'),
-    'indexes' => array(
-      'timestamp' => array('timestamp'),
     ),
   );
 
