@@ -550,8 +550,21 @@ function media_form_file_entity_edit_alter(&$form, &$form_state) {
   }
 }
 
+/**
+ * Alter forms when using the media browser popup to use
+ * media_browser_form_submit
+ */
 function media_form_alter(&$form, &$form_state, $form_id) {
+  // If we're in the media browser, set the #media_browser key to true
+  // so that if an ajax request gets sent to a different path, the form
+  // still uses the media_browser_form_submit callback
   if (current_path() == 'media/browser' && $form_id != 'views_exposed_form') {
+    $form_state['#media_browser'] = TRUE;
+  }
+
+  // If the #media_browser key isset and is true we are using the browser
+  // popup, so add the media_browser submit handler
+  if (!empty($form_state['#media_browser'])) {
     $form['#submit'][] = 'media_browser_form_submit';
   }
 }
