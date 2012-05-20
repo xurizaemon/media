@@ -1161,7 +1161,7 @@ function media_form_file_entity_admin_files_alter(&$form, $form_state) {
     else {
       $form['files'] = array(
         '#tree' => TRUE,
-        '#prefix' => '<div class="media-display-thumbnails media-clear clearfix"><ul class="media-list-thumbnails">',
+        '#prefix' => '<div class="media-display-thumbnails media-clear clearfix"><ul id="media-browser-library-list" class="media-list-thumbnails">',
         '#suffix' => '</ul></div>',
       );
 
