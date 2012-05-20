@@ -1038,7 +1038,7 @@ function media_filter_info() {
  * @param $file
  *  A file object.
  */
-function _media_save_file_permenently(&$file) {
+function _media_save_file_permanently($file) {
   if ($file->status < FILE_STATUS_PERMANENT) {
     $file->status = FILE_STATUS_PERMANENT;
     file_save($file);
