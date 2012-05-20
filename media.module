@@ -233,23 +233,6 @@ function media_menu() {
     'type' => MENU_CALLBACK,
   );
 
-  // @todo Move this to file_entity
-  $items['file/add'] = array(
-    'title' => 'Add file',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('media_add_upload'),
-    'access arguments' => array('administer files'),
-    'file' => 'includes/media.pages.inc',
-  );
-  if (module_exists('plupload') && module_exists('multiform')) {
-    $items['file/add']['page arguments'] = array('media_add_upload_multiple');
-  }
-  $items['file/add/upload'] = array(
-    'title' => 'Upload',
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => -10,
-  );
-
   return $items;
 }
 
@@ -1028,19 +1011,6 @@ function media_filter_info() {
   }
 
   return $filters;
-}
-
-/**
- * Sets the status to FILE_STATUS_PERMANENT.
- *
- * @param $file
- *  A file object.
- */
-function _media_save_file_permenently(&$file) {
-  if ($file->status < FILE_STATUS_PERMANENT) {
-    $file->status = FILE_STATUS_PERMANENT;
-    file_save($file);
-  }
 }
 
 /**
