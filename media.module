@@ -588,6 +588,21 @@ function media_form_wysiwyg_profile_form_alter(&$form, &$form_state) {
   form_load_include($form_state, 'inc', 'media', 'wysiwyg_plugins/media');
 }
 
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function media_form_file_entity_add_upload_alter(&$form, &$form_state) {
+  if (isset($form['upload']['#upload_validators'])) {
+    $validators = &$form['upload']['#upload_validators'];
+
+    // If the list of allowed extensions is the default provided by file_entity
+    // then change the default to the more permissive media extension list.
+    if (isset($validators['file_validate_extensions']) && $validators['file_validate_extensions'] == array(FILE_DEFAULT_ALLOWED_EXTENSIONS)) {
+      $validators['file_validate_extensions'] = array(media_variable_get('file_extensions'));
+    }
+  }
+}
+
 /* ***************************************** */
 /* API FUNCTIONS                             */
 /* ***************************************** */
