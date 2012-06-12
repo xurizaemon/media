@@ -223,7 +223,7 @@ div#media-browser .throbber {
   height:100%;
   width:100%;
   position:absolute;
-  background: transparent url('images/loading.gif') no-repeat center center;
+  background: transparent url('../images/loading.gif') no-repeat center center;
 }
 
 #media-browser .ui-tabs-panel {
