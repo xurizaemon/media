@@ -66,6 +66,10 @@ function media_help($path, $arg) {
       $output .= '<ul><li>' . t('Enable WYSIWYG plugin on your desired <a href="@wysiwyg-profile">WYSIWYG profile</a>. Please note that you will need to have <a href="@wysiwyg">WYSIWYG</a> module enabled.', array('@wysiwyg-profile' => url('admin/config/content/wysiwyg'), '@wysiwyg' => 'http://drupal.org/project/wysiwyg')) . '</li>';
       $output .= '<li>' . t('Add Media Filter to the WYSIWYG enabled <a href="@input-format">Input format</a>', array('@input-format' => url('admin/config/content/formats'))) . '</li></ul></dd>';
       return $output;
+    case 'admin/structure/file-types/manage/%/display/media_preview':
+    case 'admin/structure/file-types/manage/%/file-display/media_preview':
+      drupal_set_message(t('Changing the Preview view mode could have unintended side effects such as breaking the Media browser or WYSIWYG integration. Only change these display settings if you know what you are doing.'), 'warning');
+      break;
   }
 }
 
