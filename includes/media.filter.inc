@@ -278,6 +278,52 @@ function _media_generate_tagMap($text) {
 }
 
 /**
+ * Return a list of view modes allowed for a file embedded in the WYSIWYG.
+ *
+ * @param object $file
+ *   A file entity.
+ *
+ * @return array
+ *   An array of view modes that can be used on the file when embedded in the
+ *   WYSIWYG.
+ */
+function media_get_wysiwyg_allowed_view_modes($file) {
+  $enabled_view_modes = &drupal_static(__FUNCTION__, array());
+
+  // @todo Add more caching for this.
+  if (!isset($enabled_view_modes[$file->type])) {
+    $enabled_view_modes[$file->type] = array();
+
+    // Add the default view mode by default.
+    $enabled_view_modes[$file->type]['default'] = array('label' => t('Default'), 'custom settings' => TRUE);
+
+    $entity_info = entity_get_info('file');
+    $view_mode_settings = field_view_mode_settings('file', $file->type);
+    foreach ($entity_info['view modes'] as $view_mode => $view_mode_info) {
+      // Do not show view modes that don't have their own settings and will
+      // only fall back to the default view mode.
+      if (empty($view_mode_settings[$view_mode]['custom_settings'])) {
+        continue;
+      }
+
+      // Don't present the user with an option to choose a view mode in which
+      // the file is hidden.
+      $extra_fields = field_extra_fields_get_display('file', $file->type, $view_mode);
+      if (empty($extra_fields['file']['visible'])) {
+        continue;
+      }
+
+      // Add the view mode to the list of enabled view modes.
+      $enabled_view_modes[$file->type][$view_mode] = $view_mode_info;
+    }
+  }
+
+  $view_modes = $enabled_view_modes[$file->type];
+  drupal_alter('media_wysiwyg_allowed_view_modes', $view_modes, $file);
+  return $view_modes;
+}
+
+/**
  * Form callback used when embedding media.
  *
  * Allows the user to pick a format for their media file.
@@ -287,19 +333,9 @@ function media_format_form($form, $form_state, $file) {
   $form = array();
   $form['#media'] = $file;
 
-  $entity_info = entity_get_info('file');
-  $view_modes = $entity_info['view modes'];
-  drupal_alter('media_wysiwyg_allowed_view_modes', $view_modes, $file);
-
+  $view_modes = media_get_wysiwyg_allowed_view_modes($file);
   $formats = $options = array();
   foreach ($view_modes as $view_mode => $view_mode_info) {
-    // Don't present the user with an option to choose a view mode in which the
-    // file is hidden.
-    $extra_fields = field_extra_fields_get_display('file', $file->type, $view_mode);
-    if (!$extra_fields['file']['visible']) {
-      continue;
-    }
-
     //@TODO: Display more verbose information about which formatter and what it does.
     $options[$view_mode] = $view_mode_info['label'];
     $element = media_get_file_without_label($file, $view_mode, array('wysiwyg' => TRUE));
