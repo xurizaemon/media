@@ -122,6 +122,8 @@ function media_variable_default($name = NULL) {
       'wysiwyg_allowed_types' => array('audio', 'image', 'video'),
       // Attributes which can be modified via the wysiwyg and persist.
       'wysiwyg_allowed_attributes' => array('height', 'width', 'hspace', 'vspace', 'border', 'align', 'style', 'alt', 'title', 'class', 'id'),
+      // WYSIWYG browser plugins in WYSIWYG config page
+      'wysiwyg_browser_plugins' => array(),
 
       // Name of the theme to use in media popup dialogs, defaults to admin_theme
       'dialog_theme' => '',
