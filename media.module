@@ -952,7 +952,15 @@ function media_element_process(&$element, &$form_state, $form) {
   );
   // @todo Figure out how to update the preview image after the Edit modal is closed.
   $element['edit'] = array(
-    '#markup' => ctools_modal_text_button(t('Edit media'), 'media/' . $fid . '/edit/nojs', '', 'button edit ctools-modal-media-file-edit'),
+    '#type' => 'link',
+    '#href' => 'media/' . $fid . '/edit/nojs',
+    '#title' => t('Edit media'),
+    '#attributes' => array(
+      'class' => array(
+        'ctools-use-modal', 'use-ajax', // Required for CTools modal to work.
+        'ctools-modal-media-file-edit', 'button', 'edit',
+      ),
+    ),
     '#weight' => 20,
     '#access' => media_access('edit'),
   );
