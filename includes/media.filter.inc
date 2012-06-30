@@ -344,12 +344,6 @@ function media_format_form($form, $form_state, $file) {
 function media_get_file_without_label($file, $view_mode, $settings = array()) {
   $file->override = $settings;
 
-  // Legacy support for Styles module plugins that expect overridden HTML
-  // attributes in $file->override rather than $file->override['attributes'].
-  if (isset($settings['attributes'])) {
-    $file->override += $settings['attributes'];
-  }
-
   $element = file_view_file($file, $view_mode);
 
   // The formatter invoked by file_view_file() can use $file->override to

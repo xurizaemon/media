@@ -385,30 +385,6 @@ function media_image_style_flush($style) {
 }
 
 /**
- * Implements hook_file_style_flush().
- *
- * This hook is invoked by the File Styles module in Styles 1.x.
- *
- * @see media_styles_style_flush()
- */
-function media_file_style_flush($style) {
-  // When a file style is flushed, clear the filter and field caches.
-  media_filter_invalidate_caches();
-}
-
-/**
- * Implements hook_styles_style_flush().
- *
- * This hook is invoked by the Styles module in Styles 2.x.
- *
- * @see media_file_style_flush()
- */
-function media_styles_style_flush($style) {
-  // When a style is flushed, clear the filter and field caches.
-  media_filter_invalidate_caches();
-}
-
-/**
  * Implements hook_page_alter().
  *
  * This is used to use our alternate template when ?render=media-popup is passed
