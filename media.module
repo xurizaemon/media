@@ -271,6 +271,15 @@ function media_admin_paths() {
     'media/*/multiedit' => TRUE,
     'media/*/delete' => TRUE,
   );
+
+  // If the media browser theme is set to the admin theme, ensure it gets set
+  // as an admin path as well.
+  $dialog_theme = media_variable_get('dialog_theme');
+  if (empty($dialog_theme) || $dialog_theme == variable_get('admin_theme')) {
+    $paths['media/browser'] = TRUE;
+    $paths['media/browser/*'] = TRUE;
+  }
+
   return $paths;
 }
 
