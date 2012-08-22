@@ -405,7 +405,7 @@ function media_page_alter(&$page) {
 
     // Disable administration modules from adding output to the popup.
     // @see http://drupal.org/node/914786
-    module_invoke_all('suppress');
+    module_invoke_all('suppress', TRUE);
 
     foreach (element_children($page) as $key) {
       if ($key != 'content') {
