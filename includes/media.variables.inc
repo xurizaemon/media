@@ -137,10 +137,6 @@ function media_variable_default($name = NULL) {
       // Used in media.xml.inc: how long to cache retrieved remote data.
       'xml_cache_expire' => 3600,
 
-      // Browser defaults in media.browser.inc.
-      'browser_viewtype_default' => 'thumbnails',
-      'browser_pager_limit' => 40,
-
       'import_batch_size' => 20,
       'fromurl_supported_schemes' => array('http', 'https', 'ftp', 'smb', 'ftps'),
       'type_icon_directory' => drupal_get_path('module', 'media') . '/images/types',
@@ -152,6 +148,8 @@ function media_variable_default($name = NULL) {
       'field_select_media_text' => NULL,
       'field_remove_media_text' => NULL,
       'browser_library_empty_message' => NULL,
+      'browser_pager_limit' => NULL,
+      'browser_viewtype_default' => NULL,
     );
   }
 

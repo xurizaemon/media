@@ -41,6 +41,7 @@ function media_hook_info() {
     'media_wysiwyg_allowed_view_modes_alter',
     'media_format_form_prepare_alter',
     'media_token_to_markup_alter',
+    'query_media_browser_alter',
   );
 
   return array_fill_keys($hooks, array('group' => 'media'));
@@ -171,31 +172,6 @@ function media_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('media_browser_testbed'),
     'access arguments' => array('administer files'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/media.browser.inc',
-  );
-
-
-  /**
-   * Browser callbacks
-   * @var unknown_type
-   */
-  $items['media/browser/list'] = array(
-    'title' => 'Media browser list',
-    'description' => 'Ajax Callback for getting media',
-    'page callback' => 'media_browser_list',
-    'access callback' => 'media_access',
-    'access arguments' => array('view'),
-    'type' => MENU_CALLBACK,
-    'file' => 'includes/media.browser.inc',
-  );
-
-  $items['media/browser/library'] = array(
-    'title' => 'Media browser library',
-    'description' => 'Media Browser for picking media and uploading new media',
-    'page callback' => 'media_browser_library',
-    'access callback' => 'media_access',
-    'access arguments' => array('view'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/media.browser.inc',
   );

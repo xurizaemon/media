@@ -91,7 +91,7 @@ $handler->display->display_options['filters']['type']['expose']['identifier'] = 
 /* Display: Media browser */
 $handler = $view->new_display('media_browser', 'Media browser', 'media_browser_1');
 $handler->display->display_options['defaults']['title'] = FALSE;
-$handler->display->display_options['title'] = 'View Library';
+$handler->display->display_options['title'] = 'Library';
 
 /* Display: My files */
 $handler = $view->new_display('media_browser', 'My files', 'media_browser_my_files');
@@ -159,7 +159,7 @@ $translatables['media_default'] = array(
   t('File name'),
   t('Type'),
   t('Media browser'),
-  t('View Library'),
+  t('Library'),
   t('My files'),
   t('User who uploaded'),
 );
