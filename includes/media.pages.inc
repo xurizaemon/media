@@ -311,7 +311,7 @@ function media_add_upload_multiple_submit($form, &$form_state) {
 /**
  * Form builder: Builds the edit file form.
  */
-function media_edit($form, $form_state, $file) {
+function media_edit($form, &$form_state, $file) {
   $form_state['file'] = $file;
   field_attach_form('file', $file, $form, $form_state);
 
