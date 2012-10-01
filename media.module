@@ -886,6 +886,18 @@ function media_parse_to_file($url) {
 }
 
 /**
+ * Silly function to recursively run check_plain on an array.
+ *
+ * There is probably something in core I am not aware of that does this.
+ *
+ * @param $value
+ * @param $key
+ */
+function media_recursive_check_plain(&$value, $key) {
+  $value = check_plain($value);
+}
+
+/**
  * Implements hook_element_info().
  */
 function media_element_info() {
