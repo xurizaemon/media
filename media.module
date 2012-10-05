@@ -1031,7 +1031,7 @@ function media_element_validate(&$element, &$form_state) {
 
     $has_value = FALSE;
     foreach ($form_state['values'][$field_name][$lang] as $value) {
-      if ($value['fid']) {
+      if (!empty($value['fid'])) {
         $has_value = TRUE;
       }
     }
