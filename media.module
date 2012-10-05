@@ -1036,7 +1036,7 @@ function media_element_validate(&$element, &$form_state) {
       }
     }
     if (!$has_value) {
-      form_error($element, t('%element_title is required.', array('%element_title' => $element['#title'])));
+      form_error($element, t('%element_title is required.', array('%element_title' => $form_state['field'][$field_name][$lang]['instance']['label'])));
     }
   }
 }
