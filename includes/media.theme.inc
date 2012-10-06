@@ -121,17 +121,6 @@ function theme_media_admin_thumbnail($variables) {
   return $output;
 }
 
-
-/**
- * Theme operations for a thumbnail.
- */
-function theme_media_admin_thumbnail_operations($variables) {
-  $destination = drupal_get_destination();
-  $file = $variables['file'];
-  $output = l(t('edit'), 'file/' . $file->fid . '/edit', array('query' => $destination));
-  return $output;
-}
-
 /**
  * Add messages to the page.
  */
@@ -180,40 +169,6 @@ function theme_media_browser_control_result_limit($variables) {
   }
 
   return theme('item_list', array('items' => $per_display, 'attributes' => array('class' => 'result_limit')));
-}
-
-
-/**
- * Stolen from file.module theme_file_link
- *
- * @param $variables
- *   An associative array containing:
- *   - file: A file object to which the link will be created.
- */
-function theme_media_link($variables) {
-  $file = $variables['file'];
-
-  $url = 'file/' . $file->fid;
-  $icon = theme('file_icon', array('file' => $file));
-
-  // Set options as per anchor format described at
-  // http://microformats.org/wiki/file-format-examples
-  $options = array(
-    'attributes' => array(
-      'type' => $file->filemime . '; length=' . $file->filesize,
-    ),
-  );
-
-  // Use the description as the link text if available.
-  if (empty($file->description)) {
-    $link_text = check_plain($file->filename);
-  }
-  else {
-    $link_text = check_plain($file->description);
-    $options['attributes']['title'] = check_plain($file->filename);
-  }
-
-  return '<span class="file">' . $icon . ' ' . l($link_text, $url, $options) . '</span>';
 }
 
 /**

@@ -264,21 +264,12 @@ function media_permission() {
 
 /**
  * Implements hook_theme().
- *
- * @TODO: Needs a major cleanup.
  */
 function media_theme() {
   return array(
-
     // The default media file list form element.
     'media_file_list' => array(
       'variables' => array('element' => NULL),
-    ),
-
-    // A link for a file w/ an icon to the media/$fid page.
-    'media_link' => array(
-      'variables' => array('file' => NULL),
-      'file' => 'includes/media.theme.inc',
     ),
 
     // A preview of the uploaded file.
@@ -293,17 +284,6 @@ function media_theme() {
       'file' => 'includes/media.theme.inc',
     ),
 
-    // Administrative thumbnail previews.
-    'media_admin_thumbnail_operations' => array(
-      'variables' => array('file' => NULL),
-      'file' => 'includes/media.theme.inc',
-    ),
-
-    // Tabs in the media browser.
-    'media_browser_tabs' => array(
-      'file' => 'includes/media.theme.inc',
-    ),
-
     // Dialog page.
     'media_dialog_page' => array(
       'render element' => 'page',
@@ -311,12 +291,13 @@ function media_theme() {
       'file' => 'includes/media.theme.inc',
     ),
 
-    //
+    // Media form API element type.
     'media_element' => array(
       'render element' => 'element',
       'file' => 'includes/media.theme.inc',
     ),
 
+    // Display a file as a large icon.
     'media_formatter_large_icon' => array(
       'variables' => array('file' => NULL, 'attributes' => array()),
       'file' => 'includes/media.theme.inc',
