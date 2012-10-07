@@ -84,11 +84,33 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
     if (!isset($tag_info['fid'])) {
       throw new Exception('No file Id');
     }
+
+    // Ensure a valid view mode is being requested.
     if (!isset($tag_info['view_mode'])) {
-      // Should we log or throw an exception here instead?
-      // Do we need to validate the view mode for fields API?
       $tag_info['view_mode'] = media_variable_get('wysiwyg_default_view_mode');
     }
+    elseif ($tag_info['view_mode'] != 'default') {
+      $file_entity_info = entity_get_info('file');
+      if (!in_array($tag_info['view_mode'], array_keys($file_entity_info['view modes']))) {
+        // Media 1.x defined some old view modes that have been superseded by
+        // more semantically named ones in File Entity. The media_update_7203()
+        // function updates field settings that reference the old view modes,
+        // but it's impractical to update all text content, so adjust
+        // accordingly here.
+        static $view_mode_updates = array(
+          'media_preview' => 'preview',
+          'media_small' => 'teaser',
+          'media_large' => 'full',
+        );
+        if (isset($view_mode_updates[$tag_info['view_mode']])) {
+          $tag_info['view_mode'] = $view_mode_updates[$tag_info['view_mode']];
+        }
+        else {
+          throw new Exception('Invalid view mode');
+        }
+      }
+    }
+
 
     $file = file_load($tag_info['fid']);
     if (!$file) {

@@ -117,7 +117,7 @@ function media_variable_default($name = NULL) {
       'wysiwyg_title' => t('Media browser'),
       'wysiwyg_icon_title' => t('Add media'),
       //@todo: We should do this per type actually.  For "other" it should be a link.
-      'wysiwyg_default_view_mode' => 'media_large',
+      'wysiwyg_default_view_mode' => 'full',
       // Types which can be selected when embedding media vs wysiwyg.
       'wysiwyg_allowed_types' => array('audio', 'image', 'video'),
       // Attributes which can be modified via the wysiwyg and persist.
@@ -142,6 +142,10 @@ function media_variable_default($name = NULL) {
       'type_icon_directory' => drupal_get_path('module', 'media') . '/images/types',
       'icon_base_directory' => drupal_get_path('module', 'media') . '/images/icons',
       'icon_set' => 'default',
+
+      // Whether to show the legacy Link and Original view modes. Set to TRUE
+      // in media_update_7203() to not break sites updating from 1.x.
+      'show_deprecated_view_modes' => FALSE,
 
       // Deprecated variables no longer in use, but should still be uninstalled.
       'show_file_type_rebuild_nag' => NULL,

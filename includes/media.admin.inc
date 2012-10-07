@@ -242,7 +242,7 @@ function media_import_batch_import_files($files, &$context) {
         // @todo Is this load step really necessary? When there's time, test
         //   this, and either remove it, or comment why it's needed.
         $loaded_file = file_load($file_obj->fid);
-        $image_in_message = file_view_file($loaded_file, 'media_preview');
+        $image_in_message = file_view_file($loaded_file, 'preview');
       }
     }
     catch (Exception $e) {

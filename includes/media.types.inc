@@ -44,7 +44,7 @@ function media_file_type_info_alter(array &$info) {
 function media_file_type_media_default_view($file, $view_mode, $langcode) {
   // During preview, or when custom attribute values are needed on the displayed
   // element, use a media icon.
-  if ($view_mode == 'media_preview' || isset($file->override)) {
+  if ($view_mode == 'preview' || isset($file->override)) {
     return array(
       '#theme' => 'media_formatter_large_icon',
       '#file' => $file,
@@ -231,10 +231,16 @@ function media_file_default_displays() {
   $default_displays = array();
 
   $default_image_styles = array(
-    'media_preview' => 'square_thumbnail',
-    'media_large' => 'large',
-    'media_original' => ''
+    'preview' => 'square_thumbnail',
+    'teaser' => 'medium',
+    'full' => 'large',
   );
+
+  // For sites that updated from Media 1.x.
+  // @see media_entity_info_alter()
+  if (media_variable_get('show_deprecated_view_modes')) {
+    $default_image_styles['media_original'] = '';
+  }
 
   foreach ($default_image_styles as $view_mode => $image_style) {
     $display_name = 'image__' . $view_mode . '__file_image';

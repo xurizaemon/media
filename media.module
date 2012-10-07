@@ -67,24 +67,28 @@ function media_help($path, $arg) {
       $output .= '<ul><li>' . t('Enable WYSIWYG plugin on your desired <a href="@wysiwyg-profile">WYSIWYG profile</a>. Please note that you will need to have <a href="@wysiwyg">WYSIWYG</a> module enabled.', array('@wysiwyg-profile' => url('admin/config/content/wysiwyg'), '@wysiwyg' => 'http://drupal.org/project/wysiwyg')) . '</li>';
       $output .= '<li>' . t('Add Media Filter to the WYSIWYG enabled <a href="@input-format">Input format</a>', array('@input-format' => url('admin/config/content/formats'))) . '</li></ul></dd>';
       return $output;
-    case 'admin/structure/file-types/manage/%/display/media_preview':
-    case 'admin/structure/file-types/manage/%/file-display/media_preview':
-      drupal_set_message(t('Changing the Preview view mode could have unintended side effects such as breaking the Media browser or WYSIWYG integration. Only change these display settings if you know what you are doing.'), 'warning');
-      break;
   }
 }
 
 /**
  * Implements hook_entity_info_alter().
- *
- * Add view modes to the file entity type, appropriate for displaying media.
  */
 function media_entity_info_alter(&$entity_info) {
-  $entity_info['file']['view modes']['media_link'] = array('label' => t('Link'), 'custom settings' => TRUE);
-  $entity_info['file']['view modes']['media_preview'] = array('label' => t('Preview'), 'custom settings' => TRUE);
-  $entity_info['file']['view modes']['media_small'] = array('label' => t('Small'), 'custom settings' => TRUE);
-  $entity_info['file']['view modes']['media_large'] = array('label' => t('Large'), 'custom settings' => TRUE);
-  $entity_info['file']['view modes']['media_original'] = array('label' => t('Original'), 'custom settings' => TRUE);
+  // For sites that updated from Media 1.x, continue to provide these deprecated
+  // view modes.
+  // @see http://drupal.org/node/1051090
+  if (media_variable_get('show_deprecated_view_modes')) {
+    $entity_info['file']['view modes'] += array(
+      'media_link' => array(
+        'label' => t('Link'),
+        'custom settings' => TRUE,
+      ),
+      'media_original' => array(
+        'label' => t('Original'),
+        'custom settings' => TRUE,
+      ),
+    );
+  }
 
   if (module_exists('entity_translation')) {
     $entity_info['file']['translation']['entity_translation']['class'] = 'MediaEntityTranslationHandler';
@@ -1071,7 +1075,7 @@ function media_get_thumbnail_preview($file, $link = NULL) {
     $file->type = file_get_type($file);
   }
 
-  $preview = file_view_file($file, 'media_preview');
+  $preview = file_view_file($file, 'preview');
   $preview['#show_names'] = TRUE;
   $preview['#add_link'] = $link;
   $preview['#theme_wrappers'][] = 'media_thumbnail';
