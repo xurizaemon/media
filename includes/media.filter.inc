@@ -137,7 +137,19 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
     return '';
   }
 
-  $element = media_get_file_without_label($file, $tag_info['view_mode'], $settings);
+  if ($wysiwyg) {
+    $element = media_get_file_without_label($file, $tag_info['view_mode'], $settings);
+  }
+  else {
+    // Display the field elements.
+    $element = array();
+    $element['content']['#prefix'] = '<div>';
+    $element['content']['file'] = media_get_file_without_label($file, $tag_info['view_mode'], $settings);
+    field_attach_prepare_view('file', array($file->fid => $file), $tag_info['view_mode']);
+    entity_prepare_view('file', array($file->fid => $file));
+    $element['content'] += field_attach_view('file', $file, $tag_info['view_mode']);
+    $element['content']['#suffix'] = '</div>';
+  }
   drupal_alter('media_token_to_markup', $element, $tag_info, $settings);
   return drupal_render($element);
 }
