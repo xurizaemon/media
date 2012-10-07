@@ -318,6 +318,14 @@ function media_admin_config_browser($form, &$form_state) {
     $form['wysiwyg'][media_variable_name('wysiwyg_browser_plugins')]['#options'][$key] = !empty($plugin['title']) ? $plugin['title'] : $key;
   }
 
+  $form['wysiwyg'][media_variable_name('wysiwyg_allowed_types')] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Allowed types in WYSIWYG'),
+    '#options' => file_type_get_names(),
+    '#default_value' => media_variable_get('wysiwyg_allowed_types'),
+  );
+  $form['array_filter'] = array('#type' => 'value', '#value' => TRUE);
+
   $form['#submit'][] = 'media_admin_config_browser_pre_submit';
   return system_settings_form($form);
 }
