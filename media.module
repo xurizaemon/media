@@ -82,6 +82,7 @@ function media_help($path, $arg) {
  * Add view modes to the file entity type, appropriate for displaying media.
  */
 function media_entity_info_alter(&$entity_info) {
+  $entity_info['file']['uri callback'] = 'media_entity_uri';
   $entity_info['file']['view modes']['media_link'] = array('label' => t('Link'), 'custom settings' => TRUE);
   $entity_info['file']['view modes']['media_preview'] = array('label' => t('Preview'), 'custom settings' => TRUE);
   $entity_info['file']['view modes']['media_small'] = array('label' => t('Small'), 'custom settings' => TRUE);
@@ -546,6 +547,14 @@ function media_form_wysiwyg_profile_form_alter(&$form, &$form_state) {
 /* ***************************************** */
 /* API FUNCTIONS                             */
 /* ***************************************** */
+
+/**
++ * URI callback for file entities.
++ */
+function media_entity_uri($file) {
+  $uri['path'] = 'media/' . $file->fid;
+  return $uri;
+}
 
 /**
  * Load callback for %media_multi placeholder in menu paths.
