@@ -196,8 +196,9 @@ function media_update_dependencies() {
   // This update function requires field_update_7002() to run before it since
   // the field_bundle_settings variable has been split into separate variables
   // per entity type and bundle.
-  $dependencies['mymodule'][7016] = array(
+  $dependencies['media'][7016] = array(
     'field' => 7002,
+    'rules' => 7205,
   );
 
   return $dependencies;
