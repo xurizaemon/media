@@ -10,6 +10,7 @@ files[] = includes/MediaBrowserPluginInterface.inc
 files[] = includes/MediaBrowserPlugin.inc
 files[] = includes/MediaBrowserUpload.inc
 files[] = includes/MediaBrowserView.inc
+files[] = includes/MediaEntityTranslationHandler.inc
 files[] = includes/media_views_plugin_display_media_browser.inc
 files[] = includes/media_views_plugin_style_media_browser.inc
 files[] = tests/media.test
