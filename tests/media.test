@@ -10,7 +10,7 @@
  */
 class MediaTestHelper extends DrupalWebTestCase {
   function setUp() {
-    parent::setUp('media');
+    parent::setUp(array('media', 'file_entity'));
   }
 
   /**
