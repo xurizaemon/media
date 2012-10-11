@@ -317,7 +317,12 @@ function media_admin_config_browser($form, &$form_state) {
   foreach ($plugins as $key => $plugin) {
     $form['wysiwyg'][media_variable_name('wysiwyg_browser_plugins')]['#options'][$key] = !empty($plugin['title']) ? $plugin['title'] : $key;
   }
-
+  $form['wysiwyg'][media_variable_name('wysiwyg_upload_directory')] = array(
+    '#type' => 'textfield',
+    '#title' => t("File directory for uploaded media"),
+    '#default_value' => media_variable_get('wysiwyg_upload_directory'),
+    '#description' => t('Optional subdirectory within the upload destination where files will be stored. Do not include preceding or trailing slashes.'),
+  );
   $form['wysiwyg'][media_variable_name('wysiwyg_allowed_types')] = array(
     '#type' => 'checkboxes',
     '#title' => t('Allowed types in WYSIWYG'),
