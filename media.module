@@ -1070,6 +1070,10 @@ function media_filter_info() {
  *   Renderable array.
  */
 function media_get_thumbnail_preview($file, $link = NULL) {
+  // If a file has an invalid type, allow file_view_file() to work.
+  if (!file_type_is_enabled($file->type)) {
+    $file->type = file_get_type($file);
+  }
   $preview = file_view_file($file, 'preview');
   $preview['#show_names'] = TRUE;
   $preview['#add_link'] = $link;
@@ -1092,7 +1096,7 @@ function media_get_thumbnail_preview($file, $link = NULL) {
  */
 function media_file_validate_types(stdClass $file, $types) {
   $errors = array();
-  if (!in_array(media_get_type($file), $types)) {
+  if (!in_array(file_get_type($file), $types)) {
     $errors[] = t('Only the following types of files are allowed to be uploaded: %types-allowed', array('%types-allowed' => implode(', ', $types)));
   }
 
