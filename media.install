@@ -45,6 +45,36 @@ function media_schema() {
 }
 
 /**
+ * Implements hook_install().
+ */
+function media_install() {
+  // Create initial display settings.
+  module_load_include('inc', 'file_entity', 'file_entity.file_api');
+  $default_image_styles = array(
+    'preview' => 'square_thumbnail',
+    'teaser' => 'medium',
+    'full' => 'large',
+  );
+  // Only needed by sites that updated from Media 1.x.
+  // @see media_entity_info_alter()
+  if (media_variable_get('show_deprecated_view_modes')) {
+    $default_image_styles['media_original'] = '';
+  }
+  foreach ($default_image_styles as $view_mode => $image_style) {
+    $display_name = 'image__' . $view_mode . '__file_image';
+    $display = array(
+      'api_version' => 1,
+      'name' => $display_name,
+      'status' => 1,
+      'weight' => 5,
+      'settings' => array('image_style' => $image_style),
+      'export_type' => NULL,
+    );
+    file_display_save((object) $display);
+  }
+}
+
+/**
  * Implements hook_uninstall().
  */
 function media_uninstall() {
@@ -707,6 +737,46 @@ function media_update_7204() {
 function media_update_7205() {
   db_drop_table('media_list_type');
   return t('Dropped the unused {media_list_type} table.');
+}
+
+/**
+ * Move default file display configurations to the database.
+ */
+function media_update_7206() {
+  module_load_include('inc', 'file_entity', 'file_entity.file_api');
+  module_load_include('inc', 'ctools', 'includes/export');
+  $default_image_styles = array(
+    'preview' => 'square_thumbnail',
+    'teaser' => 'medium',
+    'full' => 'large',
+  );
+
+  // Only needed by sites that updated from Media 1.x.
+  // @see media_entity_info_alter()
+  if (media_variable_get('show_deprecated_view_modes')) {
+    $default_image_styles['media_original'] = '';
+  }
+
+  // Clear out the ctools cache so that the old default implementations
+  // are removed.
+  ctools_export_load_object_reset('file_display');
+  foreach ($default_image_styles as $view_mode => $image_style) {
+    $existing_displays = file_displays_load('image', $view_mode, TRUE);
+    // Only insert default config into the database if no existing
+    // configuration is found.
+    if (!isset($existing_displays['file_image'])) {
+      $display_name = 'image__' . $view_mode . '__file_image';
+      $display = array(
+        'api_version' => 1,
+        'name' => $display_name,
+        'status' => 1,
+        'weight' => 5,
+        'settings' => array('image_style' => $image_style),
+        'export_type' => NULL,
+      );
+      file_display_save((object) $display);
+    }
+  }
 }
 
 /**
