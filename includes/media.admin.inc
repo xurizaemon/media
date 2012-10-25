@@ -201,7 +201,7 @@ function media_admin_config_browser($form, &$form_state) {
   $form['wysiwyg'][media_variable_name('wysiwyg_allowed_types')] = array(
     '#type' => 'checkboxes',
     '#title' => t('Allowed types in WYSIWYG'),
-    '#options' => file_type_get_names(),
+    '#options' => file_entity_type_get_names(),
     '#default_value' => media_variable_get('wysiwyg_allowed_types'),
   );
   $form['array_filter'] = array('#type' => 'value', '#value' => TRUE);
