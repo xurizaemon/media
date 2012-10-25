@@ -780,6 +780,14 @@ function media_update_7206() {
 }
 
 /**
+ * Empty update function to trigger cache clear
+ * after changing access callbacks to file_entity_access.
+ */
+function media_update_7207() {
+  // Do nothing.
+}
+
+/**
  * Helper function for media_update_7204() to update display options within Views.
  */
 function _media_update_7204_update_views_display_options(&$display_options, $view_mode_updates) {
