@@ -116,23 +116,6 @@ function media_menu() {
     'file' => 'includes/media.admin.inc',
   );
 
-  // Settings used for determining the type of media a file is.
-  // @todo Find a new home for this that integrates with the file_entity module.
-//  $items['admin/config/media/types/manage/%media_type'] = array(
-//    'title' => 'Manage media',
-//    'title callback' => 'media_type_page_title',
-//    'title arguments' => array(5),
-//    'description' => 'Manage files used on your site.',
-//    'page callback' => 'drupal_get_form',
-//    'page arguments' => array('media_admin_type_manage_form', 5),
-//    'access arguments' => array('administer media'),
-//    'file' => 'includes/media.admin.inc',
-//  );
-//  $items['admin/config/media/types/manage/%media_type/settings'] = array(
-//    'title' => 'Settings',
-//    'type' => MENU_DEFAULT_LOCAL_TASK,
-//    'weight' => -1,
-//  );
   // Administrative screens for managing media.
   $items['admin/content/file/thumbnails'] = array(
     'title' => 'Thumbnails',
