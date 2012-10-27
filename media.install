@@ -788,6 +788,126 @@ function media_update_7207() {
 }
 
 /**
+ * Drop the media_types table and migrate all files to the new file_entity types.
+ */
+function media_update_7208() {
+  // @see http://drupal.org/node/1292382
+  if (!function_exists('file_type_get_enabled_types')) {
+    throw new DrupalUpdateException('The File Entity module needs to be upgraded before continuing.');
+  }
+  else {
+    $existing_types = db_select('media_type', 'mt')
+      ->orderBy('weight')
+      ->fields('mt')
+      ->execute()
+      // Will key by the name field.
+      ->fetchAllAssoc('name');
+    foreach ($existing_types as &$type) {
+      $type->type_callback_args = unserialize($type->type_callback_args);
+    }
+
+    include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+    $mapping = file_mimetype_mapping();
+    foreach ($existing_types as $type) {
+      if ($type->name == 'default') {
+        // We do not migrate this type, since there is no way to handle its weight.
+        continue;
+      }
+      $extensions = isset($type->type_callback_args['extensions']) ? $type->type_callback_args['extensions'] : array();
+      $mimetypes = isset($type->type_callback_args['mimetypes']) ? $type->type_callback_args['mimetypes'] : array();
+      // Add mimetypes by extensions.
+      foreach ($extensions as $extension) {
+        if (isset($mapping['extensions'][$extension])) {
+          $type->mimetypes[] = $mapping['mimetypes'][$mapping['extensions'][$extension]];
+        }
+      }
+      // Add rest mimetypes.
+      foreach ($mimetypes as $mimetype) {
+        // Mimetype is a regex pattern.
+        foreach ($mapping['mimetypes'] as $mapping_mimetype) {
+          if (preg_match($mimetype, $mapping_mimetype) && !in_array($mapping_mimetype, $type->mimetypes)) {
+            $type->mimetypes[] = $mapping_mimetype;
+          }
+        }
+      }
+      $type->streams = isset($type->type_callback_args['streams']) ? $type->type_callback_args['streams'] : array();
+      $type->type = $type->name;
+      // Merge existing type with new ones.
+      if ($new_type = file_type_load($type->name)) {
+        $new_type->mimetypes = array_merge($type->mimetypes, $new_type->mimetypes);
+        $new_type->streams = array_merge($type->streams, $new_type->streams);
+      }
+      file_type_save($new_type);
+    }
+    db_drop_table('media_type');
+
+    // Special treatment for old media application type to new file_entity
+    // document one. Add some more mimetypes to document.
+    $document_type = file_type_load('document');
+    foreach($mapping['mimetypes'] as $mimetype) {
+      $is_document = strpos($mimetype, 'document') !== FALSE || strpos($mimetype, 'application/vnd.ms-') !== FALSE;
+      if ($is_document && !in_array($mimetype, $document_type->mimetypes)) {
+        $document_type->mimetypes[] = $mimetype;
+      }
+    }
+    file_type_save($document_type);
+  }
+}
+
+/**
+ * Update {file_managed}.type with the new file types provided by file_entity.
+ */
+function media_update_7209() {
+  // Go through file_managed table and update files with the new type names.
+  $enabled_types = file_type_get_enabled_types();
+
+  $query = db_select('file_managed', 'f')
+    ->fields('f', array('fid', 'type', 'filemime', 'uri'));
+  $files = $query->execute()->fetchAllAssoc('fid');
+  $failed = array();
+  foreach ($files as $fid => $file) {
+    if (empty($file->filemime)) {
+      $file->filemime = file_get_mimetype($file->uri);
+    }
+
+    $valid = FALSE;
+    foreach ($enabled_types as $type) {
+      if (in_array($file->filemime, $type->mimetypes)) {
+        $file->newtype = $type->type;
+        $valid = TRUE;
+        continue;
+      }
+    }
+
+    if (!$valid) {
+      $failed[] = $file->uri;
+      // Mark this file with FILE_TYPE_NONE so it is easier to be tracked and
+      // updated later, instead of scanning the whole table again.
+      $file->newtype = FILE_TYPE_NONE;
+    }
+
+    if ($file->newtype != $file->type) {
+      db_update('file_managed')
+        ->fields(array('type' => $file->newtype))
+        ->condition('fid', $file->fid)
+        ->execute();
+    }
+  }
+
+  if (!empty($failed)) {
+    $failed_list = array(
+      'title' => t('The following file(s) have a mimetype that does not belong to any file entity type. Please update manually.'),
+      'items' => $failed,
+      'type' => 'ul',
+      'attributes' => array(),
+    );
+    return theme('item_list', $failed_list);
+  }
+
+  return t('All files types converted succesfully.');
+}
+
+/**
  * Helper function for media_update_7204() to update display options within Views.
  */
 function _media_update_7204_update_views_display_options(&$display_options, $view_mode_updates) {
