@@ -81,7 +81,7 @@ function template_preprocess_media_views_view_media_browser(&$vars) {
 
   $vars['class'] = implode(' ', $class);
   $vars['wrapper_class'] = implode(' ', $wrapper_class);
-  $vars['wrapper_prefix'] = '<div id="container" class="' . implode(' ', $wrapper_class) . '">';
+  $vars['wrapper_prefix'] = '<div class="' . implode(' ', $wrapper_class) . '">';
   $vars['wrapper_suffix'] = '</div>';
   $vars['list_type_prefix'] = '<' . $handler->options['type'] . ' id="media-browser-library-list" class="' . implode(' ', $class) . '">';
   $vars['list_type_suffix'] = '</' . $handler->options['type'] . '>';
