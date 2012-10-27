@@ -895,13 +895,7 @@ function media_update_7209() {
   }
 
   if (!empty($failed)) {
-    $failed_list = array(
-      'title' => t('The following file(s) have a mimetype that does not belong to any file entity type. Please update manually.'),
-      'items' => $failed,
-      'type' => 'ul',
-      'attributes' => array(),
-    );
-    return theme('item_list', $failed_list);
+    return t('The following file(s) have a mimetype that does not belong to any file entity type. Please update manually.') . PHP_EOL . implode(PHP_EOL, $failed);
   }
 
   return t('All files types converted succesfully.');
