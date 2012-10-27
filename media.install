@@ -503,14 +503,14 @@ function media_update_7020() {
  */
 function media_update_7200() {
   $perms = user_permission_get_modules();
-  if (!isset($perms['view file'])) {
+  if (!isset($perms['view files'])) {
     throw new DrupalUpdateException('The File Entity module needs to be upgraded before continuing.');
   }
   else {
     $roles = user_roles(FALSE, 'view media');
     $permissions = array(
       'view media' => FALSE,
-      'view file' => TRUE,
+      'view files' => TRUE,
     );
     foreach ($roles as $rid => $role) {
       user_role_change_permissions($rid, $permissions);
@@ -518,7 +518,7 @@ function media_update_7200() {
     $roles = user_roles(FALSE, 'edit media');
     $permissions = array(
       'edit media' => FALSE,
-      'edit file' => TRUE,
+      'edit any files' => TRUE,
     );
     foreach ($roles as $rid => $role) {
       user_role_change_permissions($rid, $permissions);
