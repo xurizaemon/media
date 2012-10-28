@@ -11,13 +11,29 @@
 function media_views_plugins() {
   $plugins = array();
 
+  // Generate a list of which base-tables to enabled the plugins for.
+
+  // Always allow the actual file-table
+  $base = array('file_managed');
+
+  if (module_exists('search_api')) {
+    // If the Search API module exists, also allow indices of the file-entity
+    // that has the `fid` field indexed.
+    $indices = search_api_index_load_multiple(NULL);
+    foreach ($indices AS $machine_name => $index) {
+      if ($index->item_type == 'file' && isset($index->options['fields']['fid'])) {
+        $base[] = 'search_api_index_' . $machine_name;
+      }
+    }
+  }
+
   // Display plugin.
   $plugins['display']['media_browser'] = array(
     'title' => t('Media browser tab'),
     'help' => t('Display as a tab in the media browser.'),
     'handler' => 'media_views_plugin_display_media_browser',
     'theme' => 'views_view',
-    'base' => array('file_managed'),
+    'base' => $base,
     'use ajax' => TRUE,
     'use pager' => TRUE,
     'accept attachments' => TRUE,
@@ -29,7 +45,7 @@ function media_views_plugins() {
     'help' => t('Displays rows as an HTML list.'),
     'handler' => 'media_views_plugin_style_media_browser',
     'theme' => 'media_views_view_media_browser',
-    'base' => array('file_managed'),
+    'base' => $base,
     'uses row plugin' => FALSE,
     'uses row class' => FALSE,
     'uses options' => FALSE,
@@ -48,6 +64,9 @@ function template_preprocess_media_views_view_media_browser(&$vars) {
   // Load file objects for each View result.
   $fids = array();
   foreach ($vars['rows'] as $index => $row) {
+    // The Search API module returns the row in a slightly different format,
+    // so convert it to the format that the normal file_managed table returns.
+    if (!empty($row->entity->fid)) $vars['rows'][$index]->fid = $row->entity->fid;
     $fids[$index] = $row->fid;
   }
   $files = file_load_multiple($fids);
