@@ -927,6 +927,13 @@ function media_update_7209() {
 }
 
 /**
+ * Delete deceprated media__type_icon_directory variable.
+ */
+function media_update_7210() {
+  media_variable_del('type_icon_directory');
+}
+
+/**
  * Helper function for media_update_7204() to update display options within Views.
  */
 function _media_update_7204_update_views_display_options(&$display_options, $view_mode_updates) {
