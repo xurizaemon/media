@@ -198,6 +198,15 @@ function media_admin_config_browser($form, &$form_state) {
     '#default_value' => media_variable_get('wysiwyg_upload_directory'),
     '#description' => t('Optional subdirectory within the upload destination where files will be stored. Do not include preceding or trailing slashes.'),
   );
+
+  if (module_exists('token')) {
+    $form['wysiwyg'][media_variable_name('wysiwyg_upload_directory')]['#description'] .= t('This field supports tokens.');
+    $form['wysiwyg']['tokens'] = array(
+      '#theme' => 'token_tree',
+      '#dialog' => TRUE,
+    );
+  }
+
   $form['wysiwyg'][media_variable_name('wysiwyg_allowed_types')] = array(
     '#type' => 'checkboxes',
     '#title' => t('Allowed types in WYSIWYG'),
