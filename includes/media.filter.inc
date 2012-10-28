@@ -346,7 +346,6 @@ function media_format_form($form, $form_state, $file) {
   $form['#attached']['library'][] = array('media', 'media_base');
   $form['#attached']['library'][] = array('system', 'form');
   $form['#attached']['js'][] = drupal_get_path('module', 'media') . '/js/media.format_form.js';
-  $form['#attached']['css'][] = drupal_get_path('module', 'media') . '/css/media-format-form.css';
 
   $form['heading'] = array(
     '#type' => 'markup',
