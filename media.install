@@ -100,6 +100,31 @@ function media_update_dependencies() {
 }
 
 /**
+ * Implements hook_requirements().
+ */
+function media_requirements($phase) {
+  $t = get_t();
+  // Make sure that file_entity module is 2.x version.
+  // We can't add this check in .info file because drupal.org testbot cant
+  // handle it. See #1734648.
+  $requirements = array();
+
+  if ($phase == 'install' || $phase == 'update') {
+    $info = system_get_info('module', 'file_entity');
+    if (strpos($info['version'], '7.x-2') === FALSE) {
+      $requirements['file_entity'] = array(
+        'title' => $t('File entity 2.x'),
+        'value' => $t('Wrong version'),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => $t('Media 2.x requires <a href="@url">File entity 2.x</a>. Please download the correct version and make sure you have deleted the file_entity folder inside the media module directory.', array('@url' => 'http://drupal.org/project/file_entity')),
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
  * Deprecated update function.
  */
 function media_update_7000() {
