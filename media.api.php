@@ -139,7 +139,7 @@ function hook_media_format_form_prepare_alter(&$form, &$form_state, $file) {
   $form['preview']['#access'] = FALSE;
 
   $file = $form['#media'];
-  $form['heading']['#markup'] = t('Embedding %filename of type %filetype', array('%filename' => $file->filename, '%filetype' => $file->type)),
+  $form['heading']['#markup'] = t('Embedding %filename of type %filetype', array('%filename' => $file->filename, '%filetype' => $file->type));
 }
 
 /**
