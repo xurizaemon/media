@@ -93,12 +93,13 @@ function media_entity_info_alter(&$entity_info) {
 }
 
 /**
- * Access callback for files.
+ * Access callback for files. Don't use this function, it will be removed!
  *
- * @todo Completely remove this function, untill rest of contrib like media_youtube catches up.
+ * @todo Completely remove this function in favor of file_entity_access after
+ * a few releases, to ensure rest of contib catches up.
  */
 function media_access($op, $account = NULL) {
-  return (user_access('administer files', $account) || user_access($op . ' file', $account));
+  return user_access('administer files', $account);
 }
 
 /**
