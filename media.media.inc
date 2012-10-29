@@ -39,7 +39,7 @@ function media_media_browser_plugin_info() {
 }
 
 /**
- * Implements hook_query_TAG_alter().
+ * Implements hook_query_media_browser_alter().
  */
 function media_query_media_browser_alter($query) {
   // Ensure that the query is against the file_managed table.
