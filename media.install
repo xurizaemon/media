@@ -112,7 +112,7 @@ function media_requirements($phase) {
   // handle it. See #1734648.
   $requirements = array();
 
-  if ($phase == 'install' || $phase == 'update') {
+  if ($phase == 'update') {
     $info = system_get_info('module', 'file_entity');
     if (strpos($info['version'], '7.x-2') === FALSE) {
       $requirements['file_entity'] = array(
