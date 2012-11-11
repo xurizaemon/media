@@ -18,12 +18,16 @@ Drupal.behaviors.mediaViews = {
 
     // We loop through the views listed in Drupal.settings.media.browser.views
     // and set them up individually.
-    var views_ids = Object.keys(Drupal.settings.media.browser.views);
+    var views_ids = [];
+    for(var key in Drupal.settings.media.browser.views){
+      views_ids.push(key);
+    }
+
     for (var i = 0; i < views_ids.length; i++) {
       var views_id = views_ids[i];
       for (var j= 0; j < Drupal.settings.media.browser.views[views_id].length; j++) {
-        var views_display_id = Drupal.settings.media.browser.views[views_id][j]
-          , view = $('.view-id-' + views_id + '.view-display-id-' + views_display_id);
+        var views_display_id = Drupal.settings.media.browser.views[views_id][j],
+          view = $('.view-id-' + views_id + '.view-display-id-' + views_display_id);
         if (view.length) {
           Drupal.media.browser.views.setup(view);
         }
@@ -63,8 +67,8 @@ Drupal.media.browser.views.select = function(view) {
 Drupal.media.browser.views.setup = function(view) {
   // Catch the click on a media item
   $('.view-content .media-item', view).bind('click', function () {
-    var fid = $(this).closest('a[data-fid]').data('fid')
-      , selectedFiles = new Array();
+    var fid = $(this).closest('a[data-fid]').data('fid'),
+      selectedFiles = new Array();
 
     // Remove all currently selected files
     $('.view-content .media-item', view).removeClass('selected');
