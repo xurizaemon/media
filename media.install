@@ -821,6 +821,10 @@ function media_update_7207() {
  * Drop the media_types table and migrate all files to the new file_entity types.
  */
 function media_update_7208() {
+  if (!db_table_exists('media_list_type')) {
+    // No types to migrate.
+    return;
+  }
   // @see http://drupal.org/node/1292382
   if (!function_exists('file_type_get_enabled_types')) {
     throw new DrupalUpdateException('The File Entity module needs to be upgraded before continuing.');
