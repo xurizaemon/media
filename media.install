@@ -763,8 +763,10 @@ function media_update_7204() {
  * Drop the unused {media_list_type} table.
  */
 function media_update_7205() {
-  db_drop_table('media_list_type');
-  return t('Dropped the unused {media_list_type} table.');
+  if (db_table_exists('media_list_type')) {
+    db_drop_table('media_list_type');
+    return t('Dropped the unused {media_list_type} table.');
+  }
 }
 
 /**
