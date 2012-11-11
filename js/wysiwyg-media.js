@@ -225,7 +225,7 @@ function create_element (html, info) {
   var classes = ['media-element'];
 
   if(info.view_mode){
-    classes.push(info.view_mode.replace(/_/g, '-'));
+    classes.push('file-' + info.view_mode.replace(/_/g, '-'));
   }
   element.addClass(classes.join(' '));
 
