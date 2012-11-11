@@ -118,6 +118,8 @@ function media_variable_default($name = NULL) {
       'wysiwyg_icon_title' => t('Add media'),
       //@todo: We should do this per type actually.  For "other" it should be a link.
       'wysiwyg_default_view_mode' => 'full',
+      // Directory to store media uploaded via WYSIWYG.
+      'wysiwyg_upload_directory' => '',
       // Types which can be selected when embedding media vs wysiwyg.
       'wysiwyg_allowed_types' => array('audio', 'image', 'video'),
       // Attributes which can be modified via the wysiwyg and persist.
