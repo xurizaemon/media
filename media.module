@@ -62,7 +62,7 @@ function media_help($path, $arg) {
       $output .= '<dt>' . t('Using media assets in WYSIWYG') . '</dt>';
       $output .= '<dd>' . t('Media module provides rich integration with WYSIWYG editors, using Media Browser plugin you can select media asset from library to add to the rich text editor moreover you can add media asset from the media browser itself using either upload method or add from url method. To configure media with WYSIWYG you need two steps of configuration:');
       $output .= '<ul><li>' . t('Enable WYSIWYG plugin on your desired <a href="@wysiwyg-profile">WYSIWYG profile</a>. Please note that you will need to have <a href="@wysiwyg">WYSIWYG</a> module enabled.', array('@wysiwyg-profile' => url('admin/config/content/wysiwyg'), '@wysiwyg' => 'http://drupal.org/project/wysiwyg')) . '</li>';
-      $output .= '<li>' . t('Enable the %tags filter on the <a href="@input-format">Input format</a> you are using with the WYSIWYG profile.', array('%tags' => 'Convert Media tags to markup'), array('@input-format' => url('admin/config/content/formats'))) . '</li></ul></dd>';
+      $output .= '<li>' . t('Enable the <em>Convert Media tags to markup</em> filter on the <a href="@input-format">Input format</a> you are using with the WYSIWYG profile.', array('@input-format' => url('admin/config/content/formats'))) . '</li></ul></dd>';
       return $output;
   }
 }
