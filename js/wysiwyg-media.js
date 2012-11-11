@@ -222,7 +222,12 @@ function create_element (html, info) {
   element.attr('data-file_info', encodeURI(JSON.stringify(info)));
 
   // Adding media-element class so we can find markup element later.
-  element.addClass('media-element');
+  var classes = ['media-element'];
+
+  if(info.view_mode){
+    classes.push(info.view_mode.replace(/_/g, '-'));
+  }
+  element.addClass(classes.join(' '));
 
   return element;
 }
