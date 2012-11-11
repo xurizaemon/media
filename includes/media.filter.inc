@@ -179,12 +179,17 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
   else {
     // Display the field elements.
     $element = array();
-    $element['content']['#prefix'] = '<div>';
     $element['content']['file'] = media_get_file_without_label($file, $tag_info['view_mode'], $settings);
     field_attach_prepare_view('file', array($file->fid => $file), $tag_info['view_mode']);
     entity_prepare_view('file', array($file->fid => $file));
     $element['content'] += field_attach_view('file', $file, $tag_info['view_mode']);
-    $element['content']['#suffix'] = '</div>';
+    if (count(element_children($element['content'])) > 1) {
+      // Add surrounding divs to group them together.
+      // We dont want divs when there are no additional fields to allow them
+      // to display inline.
+      $element['content']['#prefix'] = '<div>';
+      $element['content']['#suffix'] = '</div>';
+    }
   }
   drupal_alter('media_token_to_markup', $element, $tag_info, $settings);
   return drupal_render($element);
