@@ -953,7 +953,7 @@ function media_element_process(&$element, &$form_state, $form) {
       ),
     ),
     '#weight' => 20,
-    '#access' => file_entity_access('update', $fid),
+    '#access' => file_entity_access('update', $file),
   );
   $element['remove'] = array(
     '#type' => 'link',
