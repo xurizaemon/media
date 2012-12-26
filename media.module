@@ -113,7 +113,7 @@ function media_menu() {
     'description' => 'Configure the behavior and display of the media browser.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('media_admin_config_browser'),
-    'access arguments' => array('administer files'),
+    'access arguments' => array('administer media browser'),
     'file' => 'includes/media.admin.inc',
   );
 
@@ -243,6 +243,10 @@ function media_admin_paths() {
  */
 function media_permission() {
   return array(
+    'administer media browser' => array(
+      'title' => t('Administer media browser'),
+      'description' => t('Access media browser settings.'),
+    ),
     'import media' => array(
       'title' => t('Import media files from the local filesystem'),
       'description' => t('Simple file importer'),
