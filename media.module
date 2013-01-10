@@ -934,13 +934,15 @@ function media_element_process(&$element, &$form_state, $form) {
     '#prefix' => '<div class="preview launcher">',
     '#suffix' => '</div>',
     '#weight' => 0,
-    'content' => !empty($file) ? media_get_thumbnail_preview($file) : array(),
+    'content' => $file ? media_get_thumbnail_preview($file) : array(),
   );
 
+  // @todo: Perhaps this language logic should be handled by JS since the state
+  // changes on client side after choosing an item.
   $element['select'] = array(
     '#type' => 'link',
     '#href' => '',
-    '#title' => t('Select media'),
+    '#title' => $file ? t('Replace') : t('Add'),
     '#attributes' => array('class' => array('button', 'launcher')),
     '#options' => array('fragment' => FALSE, 'external' => TRUE),
     '#weight' => 10,
@@ -949,7 +951,7 @@ function media_element_process(&$element, &$form_state, $form) {
   $element['edit'] = array(
     '#type' => 'link',
     '#href' => 'media/' . $fid . '/edit/nojs',
-    '#title' => t('Edit media'),
+    '#title' => t('Edit'),
     '#attributes' => array(
       'class' => array(
         'ctools-use-modal', 'use-ajax', // Required for CTools modal to work.
@@ -962,7 +964,7 @@ function media_element_process(&$element, &$form_state, $form) {
   $element['remove'] = array(
     '#type' => 'link',
     '#href' => '',
-    '#title' => t('Remove media'),
+    '#title' => t('Remove'),
     '#attributes' => array('class' => array('button', 'remove')),
     '#options' => array('fragment' => FALSE, 'external' => TRUE),
     '#weight' => 30,
