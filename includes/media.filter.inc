@@ -193,9 +193,16 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
     $element['content'] += field_attach_view('file', $file, $tag_info['view_mode']);
     if (count(element_children($element['content'])) > 1) {
       // Add surrounding divs to group them together.
-      // We dont want divs when there are no additional fields to allow them
-      // to display inline.
-      $element['content']['#prefix'] = '<div>';
+      // We dont want divs when there are no additional fields to allow files
+      // to display inline with text, without breaking p tags.
+      $attributes = array(
+        'class' => array(
+          'media',
+          'media-element-container',
+          'media-' . $element['content']['file']['#view_mode'],
+        ),
+      );
+      $element['content']['#prefix'] = '<div ' . drupal_attributes($attributes) . '>';
       $element['content']['#suffix'] = '</div>';
     }
   }
