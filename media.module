@@ -497,14 +497,6 @@ function media_form_file_entity_edit_alter(&$form, &$form_state) {
     $form['actions']['cancel']['#attributes']['class'][] = 'button-no';
     $form['actions']['cancel']['#attributes']['class'][] = 'ctools-close-modal';
   }
-
-  // Make adjustments to the file edit form when used in the media modal.
-  $params = drupal_get_query_parameters();
-  if (!empty($params['render']) && $params['render'] == 'media-popup') {
-    $form['#attached']['js'][] = drupal_get_path('module', 'media') . '/js/media.browser.edit.js';
-    $form['actions']['cancel']['#access'] = FALSE;
-    $form['actions']['delete']['#access'] = FALSE;
-  }
 }
 
 /**
@@ -547,18 +539,8 @@ function media_browser_form_submit($form, &$form_state) {
     $parameters = array('query' => array('render' => 'media-popup', 'fid' => array_keys($files)));
   }
 
-  // If $url is set, we had some sort of upload, so redirect
+  // If $url is set, we had some sort of upload, so redirect the form.
   if (!empty($url)) {
-    // We the user has access to edit media, we change the redirect to the file-edit url
-    // first, then secondly to the destionation decided above.
-    // @todo maybe check every file separately for update permissions instead of edit any file.
-    if (user_access('edit any files')) {
-      $destination = $url . '?' . drupal_http_build_query($parameters['query']);
-      $url = media_file_edit_url($parameters['query']['fid']);
-      $parameters = array('query' => array('render' => 'media-popup', 'destination' => $destination));
-    }
-
-    // Redirect the form.
     $form_state['redirect'] = array($url, $parameters);
   }
 }
