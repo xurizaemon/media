@@ -6,7 +6,7 @@
  */
 
 /**
- *  Menu callback; display a thumbnail for an AJAX preview.
+ * Menu callback; display a thumbnail for an AJAX preview.
  */
 function media_preview_ajax() {
   $url = $_GET['url'];
@@ -28,12 +28,12 @@ function media_preview_ajax() {
 /**
  * Menu callback; Edit multiple files on the same page using multiform module.
  *
+ * @todo When http://drupal.org/node/1227706 is fixed, filter the $files
+ * array using file_access($file, 'edit').
+ *
  * @see media_file_operation_edit_multiple()
  */
 function media_file_page_edit_multiple($files) {
-  // @todo When http://drupal.org/node/1227706 is fixed, filter the $files
-  // array using file_access($file, 'edit').
-
   if (empty($files)) {
     return MENU_ACCESS_DENIED;
   }

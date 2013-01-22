@@ -14,15 +14,15 @@ function media_wysiwyg_include_directory($type) {
   switch ($type) {
     case 'plugins':
       return 'wysiwyg_plugins';
-        break;
-    }
+
+    break;
+  }
 }
 
 /**
  * Filter callback for media markup filter.
  *
  * @TODO check for security probably pass text through filter_xss
- * @return unknown_type
  */
 function media_filter($text) {
   $text = ' ' . $text . ' ';
@@ -32,15 +32,15 @@ function media_filter($text) {
 }
 
 /**
- * Parses the contents of a CSS declaration block and returns a keyed array of property names and values.
+ * Parses the contents of a CSS declaration block.
  *
- * @param $declarations
+ * @param string $declarations
  *   One or more CSS declarations delimited by a semicolon. The same as a CSS
  *   declaration block (see http://www.w3.org/TR/CSS21/syndata.html#rule-sets),
  *   but without the opening and closing curly braces. Also the same as the
  *   value of an inline HTML style attribute.
  *
- * @return
+ * @return array
  *   A keyed array. The keys are CSS property names, and the values are CSS
  *   property values.
  */
@@ -60,9 +60,10 @@ function media_parse_css_declarations($declarations) {
  *
  * @param string $match
  *   Takes a match of tag code
- * @param boolean $wysiwyg
+ * @param bool $wysiwyg
  *   Set to TRUE if called from within the WYSIWYG text area editor.
- * @return
+ *
+ * @return string
  *   The HTML markup representation of the tag, or an empty string on failure.
  *
  * @see media_get_file_without_label()
@@ -111,7 +112,6 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
       }
     }
 
-
     $file = file_load($tag_info['fid']);
     if (!$file) {
       throw new Exception('Could not load media object');
@@ -139,7 +139,7 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
       // of the style attribute or the corresponding HTML attributes, so pull
       // these two out into top-level settings. Different WYSIWYG editors have
       // different behavior with respect to whether they store user-specified
-      // dimensions in the HTML attributes or the style attribute, so check both.
+      // dimensions in the HTML attributes or the style attribute - check both.
       // Per http://www.w3.org/TR/html5/the-map-element.html#attr-dim-width, the
       // HTML attributes are merely hints: CSS takes precedence.
       if (isset($settings['attributes']['style'])) {
@@ -180,11 +180,13 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
     // Display the field elements.
     $element = array();
     $element['content']['file'] = media_get_file_without_label($file, $tag_info['view_mode'], $settings);
-    // Overwrite or set the file #alt attribute if it has been set in this instance.
+    // Overwrite or set the file #alt attribute if it has been set in this
+    // instance.
     if (!empty($element['content']['file']['#attributes']['alt'])) {
       $element['content']['file']['#alt'] = $element['content']['file']['#attributes']['alt'];
     }
-    // Overwrite or set the file #title attribute if it has been set in this instance.
+    // Overwrite or set the file #title attribute if it has been set in this
+    // instance.
     if (!empty($element['content']['file']['#attributes']['title'])) {
       $element['content']['file']['#title'] = $element['content']['file']['#attributes']['title'];
     }
@@ -211,11 +213,11 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
 }
 
 /**
- * Builds a map of media tags in the element being rendered to their rendered HTML.
+ * Builds a map of media tags in the element.
  *
- * The map is stored in JS, so we can transform them when the editor is being displayed.
- *
- * @param array $element
+ * Builds a map of the media tags in an element that are being rendered to their
+ * rendered HTML. The map is stored in JS, so we can transform them when the
+ * editor is being displayed.
  */
 function media_pre_render_text_format($element) {
   // filter_process_format() copies properties to the expanded 'value' child
@@ -238,12 +240,16 @@ function media_pre_render_text_format($element) {
 }
 
 /**
+ * Creates map of inline media tags.
+ *
  * Generates an array of [inline tags] => <html> to be used in filter
  * replacement and to add the mapping to JS.
- * @param
- * The String containing text and html markup of textarea
- * @return
- * An associative array with tag code as key and html markup as the value.
+ *
+ * @param string $text
+ *   The String containing text and html markup of textarea
+ *
+ * @return array
+ *   An associative array with tag code as key and html markup as the value.
  *
  * @see media_process_form()
  * @see media_token_to_markup()
@@ -336,7 +342,8 @@ function media_format_form($form, $form_state, $file) {
   $view_modes = media_get_wysiwyg_allowed_view_modes($file);
   $formats = $options = array();
   foreach ($view_modes as $view_mode => $view_mode_info) {
-    //@TODO: Display more verbose information about which formatter and what it does.
+    // @TODO: Display more verbose information about which formatter and what it
+    // does.
     $options[$view_mode] = $view_mode_info['label'];
     $element = media_get_file_without_label($file, $view_mode, array('wysiwyg' => TRUE));
 
@@ -382,7 +389,7 @@ function media_format_form($form, $form_state, $file) {
     '#markup' => drupal_render($preview),
   );
 
-  // These will get passed on to WYSIWYG
+  // These will get passed on to WYSIWYG.
   $form['options'] = array(
     '#type' => 'fieldset',
     '#title' => t('options'),
@@ -392,7 +399,7 @@ function media_format_form($form, $form_state, $file) {
     '#type' => 'select',
     '#title' => t('Current format is'),
     '#options' => $options,
-    '#default_value' => $default_view_mode
+    '#default_value' => $default_view_mode,
   );
 
   if ($file->type === 'image') {
@@ -411,11 +418,11 @@ function media_format_form($form, $form_state, $file) {
     );
   }
 
-  // Similar to a form_alter, but we want this to run first so that media.types.inc
-  // can add the fields specific to a given type (like alt tags on media).
-  // If implemented as an alter, this might not happen, making other alters not
-  // be able to work on those fields.
-  // @TODO: We need to pass in existing values for those attributes.
+  // Similar to a form_alter, but we want this to run first so that
+  // media.types.inc can add the fields specific to a given type (like alt tags
+  // on media). If implemented as an alter, this might not happen, making other
+  // alters not be able to work on those fields.
+  // @todo: We need to pass in existing values for those attributes.
   drupal_alter('media_format_form_prepare', $form, $form_state, $file);
 
   if (!element_children($form['options'])) {
@@ -480,7 +487,7 @@ function media_get_file_without_label($file, $view_mode, $settings = array()) {
  *    carefully to avoid scalability issues with large result sets, and may
  *    not be worth the effort.
  *
- * @param $fid
+ * @param int $fid
  *   Optional media fid being updated. If not given, the cache will be cleared
  *   as long as any file is referenced.
  */
@@ -499,13 +506,13 @@ function media_filter_invalidate_caches($fid = FALSE) {
  * Determines if the {media_filter_usage} table has any entries.
  */
 function media_filter_usage_has_records() {
-  return  (bool) db_query_range('SELECT 1 FROM {media_filter_usage} WHERE fid > :fid', 0, 1, array(':fid' => 0))->fetchField();
+  return (bool) db_query_range('SELECT 1 FROM {media_filter_usage} WHERE fid > :fid', 0, 1, array(':fid' => 0))->fetchField();
 }
 
 /**
  * Tracks usage of media fids by the media filter.
  *
- * @param $fid
+ * @param int $fid
  *   The media fid.
  */
 function media_filter_track_usage($fid) {
