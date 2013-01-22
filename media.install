@@ -96,10 +96,7 @@ function media_update_dependencies() {
     'rules' => 7205,
   );
   // Those updates require {file_type} table created.
-  $dependencies['media'][7208] = array(
-    'file_entity' => 7201,
-  );
-  $dependencies['media'][7209] = array(
+  $dependencies['media'][7200] = array(
     'file_entity' => 7201,
   );
   return $dependencies;
