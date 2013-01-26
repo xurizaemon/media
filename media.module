@@ -270,12 +270,6 @@ function media_theme() {
       'file' => 'includes/media.theme.inc',
     ),
 
-    // Administrative thumbnail previews.
-    'media_admin_thumbnail' => array(
-      'variables' => array('file' => array(), 'style_name' => 'thumbnail'),
-      'file' => 'includes/media.theme.inc',
-    ),
-
     // Dialog page.
     'media_dialog_page' => array(
       'render element' => 'page',
