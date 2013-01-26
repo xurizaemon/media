@@ -5,6 +5,25 @@
  * Common pages for the Media module.
  */
 
+/**
+ * Menu callback; display a thumbnail for an AJAX preview.
+ */
+function media_preview_ajax() {
+  $url = $_GET['url'];
+  $uri = media_parse_to_uri($url);
+  if ($uri) {
+    $file = file_uri_to_object($uri);
+    drupal_json_output(array(
+      'preview' => theme('media_admin_thumbnail', array('file' => $file)),
+    ));
+  }
+  else {
+    drupal_json_output(array(
+      'error' => t('Invalid URL.'),
+    ));
+  }
+  die();
+}
 
 /**
  * Menu callback; Edit multiple files on the same page using multiform module.
