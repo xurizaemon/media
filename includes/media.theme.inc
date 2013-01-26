@@ -23,51 +23,6 @@ function theme_media_file_list($element) {
 }
 
 /**
- * Theme a thumbnail.
- *
- * @param array $variables
- *   array items being passed in
- */
-function theme_media_admin_thumbnail($variables) {
-  $path = drupal_get_path('module', 'media');
-  $file = $variables['file'];
-  $style_name = $variables['style_name'];
-  if (isset($file)) {
-    $file_url = file_create_url($file->uri);
-  }
-  else {
-    return '';
-  }
-  $output = '';
-  // Display a thumbnail for images.
-  if (strstr($file->filemime, 'image')) {
-    $thumbnail = theme('image_style',
-      array(
-        'style_name' => 'thumbnail',
-        'path' => $file->uri,
-        'alt' => t('Thumbnail for !filename.', array('!filename' => $file->filename)),
-      )
-    );
-  }
-  // Display the 'unknown' icon for other file types.
-  else {
-    $thumbnail = theme('image',
-      array(
-        'path' => $path . '/images/file-unknown.png',
-        'alt' => t('Thumbnail for !filename.', array('!filename' => $file->filename)),
-        'attributes' => array('class' => 'file-unknown'),
-      ));
-  }
-  $output .= l($thumbnail,
-    $file_url,
-    array(
-      'html' => TRUE,
-      'attributes' => array('class' => 'media-thumbnail'),
-    ));
-  return $output;
-}
-
-/**
  * Add messages to the page.
  */
 function template_preprocess_media_dialog_page(&$variables) {

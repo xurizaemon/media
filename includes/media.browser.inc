@@ -154,7 +154,12 @@ function media_browser($selected = NULL) {
     '#suffix' => '</div>',
   );
   $output['tabset']['list'] = array(
-    '#markup' => theme('item_list', array('items' => $tabs)),
+    '#theme' => 'item_list',
+    '#title' => t('Select a file'),
+    '#attributes' => array('class' => array('tabs', 'primary')),
+    '#items' => $tabs,
+    '#prefix' => '<div id="media-dialog-tabs-wrapper">' . "\n",
+    '#suffix' => "</div>\n",
   );
 
   $output['tabset']['plugins'] = $plugin_output;
