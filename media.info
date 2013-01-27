@@ -17,5 +17,6 @@ files[] = includes/media_views_plugin_display_media_browser.inc
 files[] = includes/media_views_plugin_style_media_browser.inc
 files[] = tests/media.test
 files[] = tests/media.entity.test
+files[] = tests/media.file.usage.test
 
 configure = admin/config/media/browser
