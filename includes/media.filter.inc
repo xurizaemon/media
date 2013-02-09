@@ -375,15 +375,13 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
       // Add surrounding divs to group them together.
       // We dont want divs when there are no additional fields to allow files
       // to display inline with text, without breaking p tags.
-      $attributes = array(
-        'class' => array(
-          'media',
-          'media-element-container',
-          'media-' . $element['content']['file']['#view_mode'],
-        ),
+      $element['content']['#type'] = 'container';
+      $element['content']['#attributes']['class'] = array(
+        'media',
+        'media-element-container',
+        'media-' . $element['content']['file']['#view_mode']
       );
-      $element['content']['#prefix'] = '<div ' . drupal_attributes($attributes) . '>';
-      $element['content']['#suffix'] = '</div>';
+    dpm($element);
     }
   }
   drupal_alter('media_token_to_markup', $element, $tag_info, $settings);
