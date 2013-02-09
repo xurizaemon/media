@@ -204,7 +204,6 @@ function media_field_attach_delete_revision($entity_type, $entity) {
  * @TODO check for security probably pass text through filter_xss
  */
 function media_filter($text) {
-  $text = ' ' . $text . ' ';
   $text = preg_replace_callback(MEDIA_TOKEN_REGEX, 'media_token_to_markup', $text);
   return $text;
 }
@@ -381,7 +380,6 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
         'media-element-container',
         'media-' . $element['content']['file']['#view_mode']
       );
-    dpm($element);
     }
   }
   drupal_alter('media_token_to_markup', $element, $tag_info, $settings);
