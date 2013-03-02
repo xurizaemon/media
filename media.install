@@ -955,7 +955,7 @@ function media_update_7209() {
  * Delete deceprated media__type_icon_directory variable.
  */
 function media_update_7210() {
-  media_variable_del('type_icon_directory');
+  variable_del('media__type_icon_directory');
 }
 
 /**
