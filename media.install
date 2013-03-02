@@ -964,8 +964,8 @@ function media_update_7210() {
 function media_update_7211() {
   image_style_flush('square_thumbnail');
   db_update('image_styles')
-    ->fields(array('name' => 'square_thumbnail'))
-    ->condition('name', 'media_thumbnail')
+    ->fields(array('name' => 'media_thumbnail'))
+    ->condition('name', 'square_thumbnail')
     ->execute();
 
   // Replace any instances in display settings

@@ -296,11 +296,11 @@ function media_theme() {
  */
 function media_image_default_styles() {
   $styles = array();
-  $styles['square_thumbnail'] = array(
+  $styles['media_thumbnail'] = array(
     'effects' => array(
       array(
         'name' => 'image_scale_and_crop',
-        'data' => array('width' => 180, 'height' => 180),
+        'data' => array('width' => 100, 'height' => 100),
         'weight' => 0,
       ),
     ),
@@ -652,10 +652,10 @@ function media_library() {
       $path . '/js/media.popups.js' => array('group' => JS_DEFAULT),
     ),
     'dependencies' => array(
-      array('media', 'media_base'),
       array('system', 'ui.resizable'),
       array('system', 'ui.draggable'),
       array('system', 'ui.dialog'),
+      array('media', 'media_base'),
     ),
   );
 
@@ -665,14 +665,11 @@ function media_library() {
     'js' => array(
       $path . '/js/media.browser.js'  => array('group' => JS_DEFAULT),
     ),
-    'css' => array(
-      $path . '/css/media.browser.css' => array('group' => CSS_DEFAULT),
-    ),
     'dependencies' => array(
-      array('media', 'media_base'),
       array('system', 'ui.tabs'),
       array('system', 'ui.draggable'),
       array('system', 'ui.dialog'),
+      array('media', 'media_base'),
     ),
   );
 
@@ -1029,6 +1026,9 @@ function media_get_thumbnail_preview($file, $link = NULL) {
   if (!file_type_is_enabled($file->type)) {
     $file->type = file_get_type($file);
   }
+  // @todo should CSS be attached to the form element here?
+  // $element['#attached']['css'][] = drupal_get_path('module', 'media') . '/css/media.css';
+  drupal_add_css(drupal_get_path('module', 'media') . '/css/media.css');
   $preview = file_view_file($file, 'preview');
   $preview['#show_names'] = TRUE;
   $preview['#add_link'] = $link;
@@ -1059,39 +1059,19 @@ function media_file_validate_types(stdClass $file, $types) {
 }
 
 /**
- * Implements hook_file_type_info_alter().
+ * Implements hook_file_displays_alter().
  */
-function media_file_type_info_alter(array &$info) {
-  // Add default view callback support for all file types.
-  foreach ($info as $type => $type_info) {
-    $info[$type] += array(
-      'default view callback' => 'media_file_type_media_default_view',
+function media_file_displays_alter(&$displays, $file, $view_mode) {
+  if ($view_mode == 'preview' && empty($displays)) {
+    // We re in the media browser and this file has no formatters enabled.
+    // Instead of letting it go through theme_file_link(), pass it through
+    // theme_media_formatter_large_icon() to get our cool file icon instead.
+    $displays['file_field_media_large_icon'] = array(
+      'weight' => 0,
+      'status' => 1,
+      'settings' => NULL,
     );
   }
-}
-
-/**
- * Implements hook_file_type_TYPE_default_view().
- *
- * Returns a drupal_render() array for displaying the file when there are no
- * administrator-configured formatters, or none of the configured ones return a
- * display.
- */
-function media_file_type_media_default_view($file, $view_mode, $langcode) {
-  // During preview, or when custom attribute values are needed on the displayed
-  // element, use a media icon.
-  if ($view_mode == 'preview' || isset($file->override)) {
-    return array(
-      '#theme' => 'media_formatter_large_icon',
-      '#file' => $file,
-    );
-  }
-
-  // Finally, fall back to File module's generic file display.
-  return array(
-    '#theme' => 'file_link',
-    '#file' => $file,
-  );
 }
 
 /**
