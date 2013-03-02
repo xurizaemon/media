@@ -65,7 +65,6 @@
  * @see template_preprocess_page()
  * @see template_process()
  */
-//print_r($page);
 ?>
 
 <?php if (isset($messages)) { print $messages; } ?>
