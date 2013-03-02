@@ -122,7 +122,7 @@ function media_menu() {
     'title' => 'Thumbnails',
     'description' => 'Manage files used on your site.',
     'page callback' => 'drupal_get_form',
-    'page arguments' => array('file_entity_admin_files'),
+    'page arguments' => array('file_entity_admin_file'),
     'access arguments' => array('administer files'),
     'type' => MENU_LOCAL_TASK,
     'file' => 'file_entity.admin.inc',
@@ -1118,7 +1118,7 @@ function media_get_hidden_stream_wrappers() {
  * It also makes modifications to the thumbnail view by replacing the existing
  * checkboxes and table with thumbnails.
  */
-function media_form_file_entity_admin_files_alter(&$form, $form_state) {
+function media_form_file_entity_admin_file_alter(&$form, $form_state) {
   if (!empty($form_state['values']['operation'])) {
     // The form is being rebuilt because an operation requiring confirmation
     // We don't want to be messing with it in this case.
@@ -1130,7 +1130,7 @@ function media_form_file_entity_admin_files_alter(&$form, $form_state) {
   // tasks.
   $path = drupal_get_path('module', 'media');
   require_once $path . '/includes/media.browser.inc';
-  $form['#attributes']['class'][] = 'file-entity-admin-files-form';
+  $form['#attributes']['class'][] = 'file-entity-admin-file-form';
   $form['#attached']['js'][] = $path . '/js/media.admin.js';
   $form['#attached']['css'][] = $path . '/css/media.css';
   media_attach_browser_js($form);
@@ -1139,22 +1139,24 @@ function media_form_file_entity_admin_files_alter(&$form, $form_state) {
   // the 'thumbnails' tab, Media generates a thumbnail for each file and
   // replaces the tableselect with a grid of thumbnails.
   if (arg(3) == 'thumbnails') {
-    if (empty($form['#files'])) {
+    if (empty($form['admin']['files'])) {
       // Display empty text if there are no files.
-      $form['files'] = array(
+      $form['admin']['files'] = array(
         '#markup' => '<p>' . $form['files']['#empty'] . '</p>',
       );
     }
     else {
-      $form['files'] = array(
+      $files = file_load_multiple(array_keys($form['admin']['files']['#options']));
+
+      $form['admin']['files'] = array(
         '#tree' => TRUE,
         '#prefix' => '<div class="media-display-thumbnails media-clear clearfix"><ul id="media-browser-library-list" class="media-list-thumbnails">',
         '#suffix' => '</ul></div>',
       );
 
-      foreach ($form['#files'] as $file) {
+      foreach ($files as $file) {
         $preview = media_get_thumbnail_preview($file, TRUE);
-        $form['files'][$file->fid] = array(
+        $form['admin']['files'][$file->fid] = array(
           '#type' => 'checkbox',
           '#title' => '',
           '#prefix' => '<li>' . drupal_render($preview),
