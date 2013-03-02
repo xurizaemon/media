@@ -967,9 +967,6 @@ function media_element_process(&$element, &$form_state, $form) {
  */
 function media_element_validate(&$element, &$form_state) {
   if ($element['#required']) {
-    $field_name = $element['#field_name'];
-    $lang = $element['#language'];
-
     $has_value = FALSE;
     $widget_parents = $element['#array_parents'];
     array_pop($widget_parents);
