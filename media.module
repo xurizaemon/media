@@ -549,8 +549,8 @@ function media_form_wysiwyg_profile_form_alter(&$form, &$form_state) {
 /* ***************************************** */
 
 /**
-+ * URI callback for file entities.
-+ */
+ * URI callback for file entities.
+ */
 function media_entity_uri($file) {
   $uri['path'] = 'media/' . $file->fid;
   return $uri;
