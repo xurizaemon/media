@@ -60,17 +60,22 @@ function media_install() {
   if (variable_get('media__show_deprecated_view_modes')) {
     $default_image_styles['media_original'] = '';
   }
+
   foreach ($default_image_styles as $view_mode => $image_style) {
-    $display_name = 'image__' . $view_mode . '__file_image';
-    $display = array(
-      'api_version' => 1,
-      'name' => $display_name,
-      'status' => 1,
-      'weight' => 5,
-      'settings' => array('image_style' => $image_style),
-      'export_type' => NULL,
-    );
-    file_display_save((object) $display);
+    $existing_display = file_displays_load('image', $view_mode);
+
+    if (empty($existing_display)) {
+      $display_name = 'image__' . $view_mode . '__file_image';
+      $display = array(
+        'api_version' => 1,
+        'name' => $display_name,
+        'status' => 1,
+        'weight' => 5,
+        'settings' => array('image_style' => $image_style),
+        'export_type' => NULL,
+      );
+      file_display_save((object) $display);
+    }
   }
 }
 
