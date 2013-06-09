@@ -11,35 +11,40 @@
  * @todo Convert the form arguments to just one array of options/parameters.
  */
 function media_internet_add($form, &$form_state = array(), $types = NULL) {
-  $providers = array();
-  foreach (media_internet_get_providers() as $key => $provider) {
-    if (empty($provider['hidden']) || $provider['hidden'] != TRUE) {
-      // @todo Convert this to show provider images in a nice format.
-      $class = drupal_clean_css_identifier(drupal_strtolower($provider['title']));
-      $providers[] = array(
-        'data' => check_plain($provider['title']),
-        'class' => array($class),
-      );
-    }
-  }
-
   $form['embed_code'] = array(
     '#type' => 'textfield',
     '#title' => t('Enter a URL to an image'),
     '#description' => t('Enter a URL to an image on the web.'),
     '#attributes' => array('class' => array('media-add-from-url')),
     // There is no standard specifying a maximum length for a URL. Internet
-    // Explorer supports upto 2083 (http://support.microsoft.com/kb/208427), so
-    // we assume publicly available media URLs are within this limit.
+    // Explorer supports up to 2083 (http://support.microsoft.com/kb/208427)
+    // so we assume publicly available media URLs are within this limit.
     '#maxlength' => 2083,
     '#required' => TRUE,
   );
 
-  // If any providers are enabled it is assumed that some kind of embed is supported
+  // Create an array to hold potential Internet media providers.
+  $providers = array();
+
+  // Determine if there are any visible providers.
+  foreach (media_internet_get_providers() as $key => $provider) {
+    if (empty($provider['hidden']) || $provider['hidden'] != TRUE) {
+      $providers[] = array(
+        'data' => check_plain($provider['title']),
+        'class' => array(drupal_html_class($provider['title'])),
+      );
+    }
+  }
+
+  // Notify the user of any available providers.
   if ($providers) {
+    // If any providers are enabled it is assumed that some kind of embed is supported.
     $form['embed_code']['#title'] = t('Enter an image URL or an embed code');
     $form['embed_code']['#description'] = t('Enter a URL or the embed code from a media provider.');
 
+    // Providers are displayed in an unordered list below the embed input.
+    // Providers can easily style their own listing by targeting the unique
+    // class assigned to each list item.
     $form['providers'] = array(
       '#theme' => 'item_list',
       '#title' => t('Supported providers'),
@@ -55,11 +60,14 @@ function media_internet_add($form, &$form_state = array(), $types = NULL) {
     $form['#validators']['media_file_validate_types'] = array($types);
   }
 
-  $form['actions'] = array('#type' => 'actions');
+  $form['actions'] = array(
+    '#type' => 'actions',
+  );
   $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit'),
   );
+
   return $form;
 }
 
@@ -72,27 +80,31 @@ function media_internet_add($form, &$form_state = array(), $types = NULL) {
  * @see media_parse_to_uri()
  */
 function media_internet_add_validate($form, &$form_state) {
-  // Supporting providers can now claim this input.  It might be a URL, but it
+  // Supporting providers can now claim this input. It might be a URL, but it
   // might be an embed code as well.
   $embed_code = $form_state['values']['embed_code'];
 
   try {
     $provider = media_internet_get_provider($embed_code);
     $provider->validate();
-  } catch (MediaInternetNoHandlerException $e) {
+  }
+  catch (MediaInternetNoHandlerException $e) {
     form_set_error('embed_code', $e->getMessage());
     return;
-  } catch (MediaInternetValidationException $e) {
+  }
+  catch (MediaInternetValidationException $e) {
     form_set_error('embed_code', $e->getMessage());
     return;
   }
 
   $validators = $form['#validators'];
   $file = $provider->getFileObject();
+
   if ($validators) {
     try {
       $file = $provider->getFileObject();
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
       form_set_error('embed_code', $e->getMessage());
       return;
     }
@@ -114,6 +126,7 @@ function media_internet_add_validate($form, &$form_state) {
       return FALSE;
     }
   }
+
   // @TODO: Validate that if we have no $uri that this is a valid file to
   // save. For instance, we may only be interested in images, and it would
   // be helpful to let the user know they passed the HTML page containing
@@ -136,6 +149,7 @@ function media_internet_add_validate($form, &$form_state) {
  */
 function media_internet_add_submit($form, &$form_state) {
   $embed_code = $form_state['values']['embed_code'];
+
   try {
     // Save the remote file
     $provider = media_internet_get_provider($embed_code);
