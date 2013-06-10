@@ -366,9 +366,9 @@ function media_element_info_alter(&$types) {
 }
 
 /**
- * Implements hook_file_operations_info().
+ * Implements hook_file_operations().
  */
-function media_file_operations_info() {
+function media_file_operations() {
   $operations = array();
 
   // If the multiform module is not installed, do not show this option.
