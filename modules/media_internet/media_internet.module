@@ -158,26 +158,57 @@ class MediaInternetFileHandler extends MediaInternetBaseHandler {
   }
 }
 
+/*
+ * Base MediaInternetBaseHandler class.
+ *
+ * Classes extending this class manage the addition of Internet media. To
+ * achieve this, the class should parse user-submitted embed code, claim it
+ * when appropriate and save it as a managed file.
+ */
 abstract class MediaInternetBaseHandler {
 
+  /**
+   * The constructor for the MediaInternetBaseHandler class. This method is also called
+   * from the classes that extend this class and override this method.
+   */
   public function __construct($embedCode) {
     $this->embedCode = $embedCode;
   }
 
   /**
-   * If required, implementors can validate the embedCode.
+   * Determines if this handler should claim the item.
+   *
+   * @param string $embed_code
+   *   A string of user-submitted embed code.
+   *
+   * @return boolean
+   *   Pass TRUE to claim the item.
    */
-  public function validate() {}
+  abstract public function claim($embed_code);
 
   /**
-   * Returns a file object which can be used for validation
+   * Returns a file object which can be used for validation.
    *
    * @return StdClass
    */
   abstract public function getFileObject();
 
   /**
-   * Saves a file to the file_managed table (with file_save)
+   * If required, implementors can validate the embedCode.
+   */
+  public function validate() {
+  }
+
+  /**
+   * Before the file has been saved, implementors may do additional operations.
+   *
+   * @param object $file_obj
+   */
+  public function preSave(&$file_obj) {
+  }
+
+  /**
+   * Saves a file to the file_managed table (with file_save).
    *
    * @return StdClass
    */
@@ -192,29 +223,10 @@ abstract class MediaInternetBaseHandler {
   /**
    * After the file has been saved, implementors may do additional operations.
    *
-   * @param $file_obj;
+   * @param object $file_obj
    */
   public function postSave(&$file_obj) {
-
   }
-
-  /**
-   * Before the file has been saved, implementors may do additional operations.
-   */
-  public function preSave(&$file_obj) {
-
-  }
-
-  /**
-   * Recognize if this handler should take the the item with the embed
-   * coded passed as argument.
-   *
-   * @param string $embed_code
-   *
-   * @return boolean
-   *   Whether or not this handler is resposible for the give embed code.
-   */
-  abstract public function claim($embed_code);
 }
 
 class MediaInternetValidationException extends Exception {
