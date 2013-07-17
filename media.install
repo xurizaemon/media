@@ -93,6 +93,12 @@ function media_uninstall() {
  * Implements hook_update_dependencies().
  */
 function media_update_dependencies() {
+  // media_update_7200() needs to convert old 'media' permissions to new 'file'
+  // permissions, so it must run before file_entity_7208 which updates existing
+  // 'file' permissions to be split per file type.
+  $dependencies['file_entity'][7208] = array(
+    'media' => 7200,
+  );
   // This update function requires field_update_7002() to run before it since
   // the field_bundle_settings variable has been split into separate variables
   // per entity type and bundle.
