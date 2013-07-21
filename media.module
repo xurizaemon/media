@@ -916,11 +916,13 @@ function media_element_process(&$element, &$form_state, $form) {
   $element['title'] = array(
     '#type' => 'item',
     '#title' => $element['#title'],
-    '#markup' => '',
     '#description' => $element['#description'],
     '#required' => $element['#required'],
     '#weight' => -100,
   );
+  if (isset($element['#title_display'])) {
+    $element['title']['#title_display'] = $element['#title_display'];
+  }
 
   // @todo This should load from the JS in case of a failed form submission.
   $element['preview'] = array(
