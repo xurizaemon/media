@@ -67,8 +67,9 @@ function _media_filter_add_file_usage_from_fields($entity_type, $entity) {
       if ($old_file_count > $entity_files[$fid]) {
         $deprecate = $old_file_count - $entity_files[$fid];
         // Now deprecate this usage
-        $file = file_load($fid);
-        file_usage_delete($file, 'media', $entity_type, $entity_id, $deprecate);
+        if ($file = file_load($fid)) {
+          file_usage_delete($file, 'media', $entity_type, $entity_id, $deprecate);
+        }
         // Usage is deleted, nothing more to do with this file
         unset($entity_files[$fid]);
       }
@@ -91,8 +92,9 @@ function _media_filter_add_file_usage_from_fields($entity_type, $entity) {
   // the file_usage table will have no entries for this because of the delete
   // query above.
   foreach ($entity_files as $fid => $entity_count) {
-    $file = file_load($fid);
-    file_usage_add($file, 'media', $entity_type, $entity_id, $entity_count);
+    if ($file = file_load($fid)) {
+      file_usage_add($file, 'media', $entity_type, $entity_id, $entity_count);
+    }
   }
 
 }
