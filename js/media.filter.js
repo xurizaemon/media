@@ -58,6 +58,10 @@
         var startTag = Drupal.media.filter.getWrapperStart(i), endTag = Drupal.media.filter.getWrapperEnd(i);
         var startPos = content.indexOf(startTag), endPos = content.indexOf(endTag);
         if (startPos !== -1 && endPos !== -1) {
+          // If the placeholder wrappers are empty, remove the macro too.
+          if (endPos - startPos - startTag.length === 0) {
+            macro = '';
+          }
           content = content.substr(0, startPos) + macro + content.substr(endPos + (new String(endTag)).length);
         }
         i++;
@@ -196,6 +200,34 @@
      */
     outerHTML: function (element) {
       return $('<div>').append(element.eq(0).clone()).html();
+    },
+
+    /**
+     * Gets the wrapped HTML content of an element to insert into the wysiwyg.
+     *
+     * It also registers the element in the tag map so that the token
+     * replacement works.
+     *
+     * @param element (jQuery object) The element to insert.
+     *
+     * @see Drupal.media.filter.replacePlaceholderWithToken()
+     */
+    getWysiwygHTML: function (element) {
+      // Create the markup and the macro.
+      var markup = Drupal.media.filter.outerHTML(element),
+        macro = Drupal.media.filter.create_macro(element);
+
+      // Store macro/markup in the tagmap.
+      Drupal.media.filter.ensure_tagmap();
+      var i = 1;
+      for (var key in Drupal.settings.tagmap) {
+        i++;
+      }
+      Drupal.settings.tagmap[macro] = markup;
+
+      // Return the wrapped html code to insert in an editor and use it with
+      // replacePlaceholderWithToken()
+      return Drupal.media.filter.getWrapperStart(i) + markup + Drupal.media.filter.getWrapperEnd(i);
     },
 
     /**

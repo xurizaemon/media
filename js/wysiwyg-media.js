@@ -109,21 +109,17 @@ InsertMedia.prototype = {
    * tagmap.
    */
   insert: function (formatted_media) {
-    var element = create_element(formatted_media.html, {
+    var element = Drupal.media.filter.create_element(formatted_media.html, {
           fid: this.mediaFile.fid,
           view_mode: formatted_media.type,
           attributes: formatted_media.options,
           fields: formatted_media.options
         });
-
-    var markup = outerHTML(element),
-        macro = create_macro(element);
+    // Get the markup and register it for the macro / placeholder handling.
+    var markup = Drupal.media.filter.getWysiwygHTML(element);
 
     // Insert placeholder markup into wysiwyg.
     Drupal.wysiwyg.instances[this.instanceId].insert(markup);
-    // Store macro/markup pair in the tagmap.
-    ensure_tagmap();
-    Drupal.settings.tagmap[macro] = markup;
   }
 };
 
@@ -133,7 +129,7 @@ InsertMedia.prototype = {
  * Ensures the tag map has been initialized.
  */
 function ensure_tagmap () {
-  Drupal.settings.tagmap = Drupal.settings.tagmap || {};
+  return Drupal.media.filter.ensure_tagmap();
 }
 
 /**
@@ -144,39 +140,11 @@ function ensure_tagmap () {
  *    A html element to be used to represent the inserted media element.
  * @param info (object)
  *    A object containing the media file information (fid, view_mode, etc).
+ *
+ * @deprecated
  */
 function create_element (html, info) {
-  if ($('<div></div>').append(html).text().length === html.length) {
-    // Element is not an html tag. Surround it in a span element
-    // so we can pass the file attributes.
-    html = '<span>' + html + '</span>';
-  }
-  var element = $(html);
-
-  // Move attributes from the file info array to the placeholder element.
-  if (info.attributes) {
-    $.each(Drupal.settings.media.wysiwyg_allowed_attributes, function(i, a) {
-      if (info.attributes[a]) {
-        element.attr(a, info.attributes[a]);
-      }
-    });
-    delete(info.attributes);
-  }
-
-  // Important to url-encode the file information as it is being stored in an
-  // html data attribute.
-  info.type = info.type || "media";
-  element.attr('data-file_info', encodeURI(JSON.stringify(info)));
-
-  // Adding media-element class so we can find markup element later.
-  var classes = ['media-element'];
-
-  if(info.view_mode){
-    classes.push('file-' + info.view_mode.replace(/_/g, '-'));
-  }
-  element.addClass(classes.join(' '));
-
-  return element;
+  return Drupal.media.filter.create_element(html, info);
 }
 
 /**
@@ -184,13 +152,11 @@ function create_element (html, info) {
  *
  * @param element (jQuery object)
  *    A media element with attached serialized file info.
+ *
+ * @deprecated
  */
 function create_macro (element) {
-  var file_info = extract_file_info(element);
-  if (file_info) {
-    return '[[' + JSON.stringify(file_info) + ']]';
-  }
-  return false;
+  return Drupal.media.filter.create_macro(element);
 }
 
 /**
@@ -198,49 +164,22 @@ function create_macro (element) {
  *
  * @param element (jQuery object)
  *    A media element with attached serialized file info.
+ *
+ * @deprecated
  */
 function extract_file_info (element) {
-  var file_json = $.data(element, 'file_info') || element.data('file_info'),
-      file_info,
-      value;
-
-  try {
-    file_info = JSON.parse(decodeURIComponent(file_json));
-  }
-  catch (err) {
-    file_info = null;
-  }
-
-  if (file_info) {
-    file_info.attributes = {};
-
-    // Extract whitelisted attributes.
-    $.each(Drupal.settings.media.wysiwyg_allowed_attributes, function(i, a) {
-      if (value = element.attr(a)) {
-        file_info.attributes[a] = value;
-      }
-    });
-    delete(file_info.attributes['data-file_info']);
-
-    // Extract the link text, if there is any.
-    if (link_text = element.find('a').html()) {
-      file_info.link_text = link_text;
-    }
-    else {
-      file_info.link_text = null;
-    }
-  }
-
-  return file_info;
+  return Drupal.media.filter.extract_file_info(element);
 }
 
 /**
  * Gets the HTML content of an element.
  *
  * @param element (jQuery object)
+ *
+ * @deprecated
  */
 function outerHTML (element) {
-  return $('<div>').append(element.eq(0).clone()).html();
+  return Drupal.media.filter.outerHTML(element);
 }
 
 })(jQuery);
