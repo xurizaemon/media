@@ -1013,3 +1013,19 @@ function media_update_7212() {
     file_type_disable($application);
   }
 }
+
+/**
+ * Remove the obsolete file_extensions variable.
+ */
+function media_update_7213() {
+  $media_file_extensions = explode(' ', variable_get('media__file_extensions'));
+  $file_entity_file_extensions = explode(' ', variable_get('file_entity_default_allowed_extensions', 'jpg jpeg gif png txt doc docx xls xlsx pdf ppt pptx pps ppsx odt ods odp mp3 mov mp4 m4a m4v mpeg avi ogg oga ogv weba webp webm'));
+
+  // Preserve any custom file extensions.
+  if (array_diff($media_file_extensions, $file_entity_file_extensions)) {
+    $combined_file_extensions = array_unique(array_merge($file_entity_file_extensions, $media_file_extensions));
+    variable_set('file_entity_default_allowed_extensions', $combined_file_extensions);
+  }
+
+  variable_del('media__file_extensions');
+}
