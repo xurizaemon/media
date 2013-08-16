@@ -624,6 +624,9 @@ function media_update_7201() {
  */
 function media_update_7202() {
   module_enable(array('views'));
+  if (module_exists('views')) {
+    throw new DrupalUpdateException('The Views module must be available to enable for Media updates to proceed.');
+  }
 }
 
 /**
