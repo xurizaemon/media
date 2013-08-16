@@ -976,7 +976,7 @@ function media_update_7213() {
   // Preserve any custom file extensions.
   if (array_diff($media_file_extensions, $file_entity_file_extensions)) {
     $combined_file_extensions = array_unique(array_merge($file_entity_file_extensions, $media_file_extensions));
-    variable_set('file_entity_default_allowed_extensions', $combined_file_extensions);
+    variable_set('file_entity_default_allowed_extensions', implode(' ' , $combined_file_extensions));
   }
 
   variable_del('media__file_extensions');
