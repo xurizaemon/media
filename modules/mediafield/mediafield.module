@@ -314,16 +314,6 @@ function mediafield_field_delete_revision($entity_type, $entity, $field, $instan
 }
 
 /**
- * Implements hook_field_instance_update().
- */
-function mediafield_field_update_instance($instance, $prior_instance) {
-  // Clear the filter cache when updating instance settings for a media entity.
-  if ($instance['entity_type'] == 'media') {
-    media_filter_invalidate_caches();
-  }
-}
-
-/**
  * Implements hook_views_api().
  */
 function mediafield_views_api() {

@@ -9,35 +9,6 @@
  * Implements hook_schema().
  */
 function media_schema() {
-  $schema['media_filter_usage'] = array(
-    'description' => 'Stores fids that have been included in the media tag in formatted textareas.',
-    'fields' => array(
-      'fid' => array(
-        'description' => 'The media {file_managed}.fid.',
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
-      ),
-      'timestamp' => array(
-        'description' => 'The timestamp the fid was last recorded by media_filter()',
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-      ),
-    ),
-    'primary key' => array('fid'),
-    'indexes' => array(
-      'timestamp' => array('timestamp'),
-    ),
-    'foreign keys' => array(
-      'file_managed' => array(
-        'table' => 'file_managed',
-        'columns' => array('fid' => 'fid'),
-      ),
-    ),
-  );
-
   $schema['cache_media_xml'] = drupal_get_schema_unprocessed('system', 'cache');
   $schema['cache_media_xml']['description'] = 'Cache table for the the results of retreived XML documents for remote streams.';
 
@@ -293,38 +264,9 @@ function media_update_7011() {
 }
 
 /**
- * Create the media_filter_usage table.
+ * Empty update function.
  */
 function media_update_7012() {
-  $schema['media_filter_usage'] = array(
-    'description' => 'Stores fids that have been included in the media tag in formatted textareas.',
-    'fields' => array(
-      'fid' => array(
-        'description' => 'The media {file_managed}.fid.',
-        'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
-      ),
-      'timestamp' => array(
-        'description' => 'The timestamp the fid was last recorded by media_filter()',
-        'type' => 'int',
-        'not null' => TRUE,
-        'default' => 0,
-      ),
-    ),
-    'foreign keys' => array(
-      'file_managed' => array(
-        'table' => 'file_managed',
-        'columns' => array('fid' => 'fid'),
-      ),
-    ),
-    'primary key' => array('fid'),
-    'indexes' => array(
-      'timestamp' => array('timestamp'),
-    ),
-  );
-  db_create_table('media_filter_usage', $schema['media_filter_usage']);
 }
 
 /**
@@ -1038,4 +980,13 @@ function media_update_7213() {
   }
 
   variable_del('media__file_extensions');
+}
+
+/**
+ * Drop the legacy {media_filter_usage} table.
+ */
+function media_update_7214() {
+  if (db_table_exists('media_filter_usage')) {
+    db_drop_table('media_filter_usage');
+  }
 }
