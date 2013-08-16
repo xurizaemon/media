@@ -569,6 +569,13 @@ function media_update_7200() {
       'edit media' => FALSE,
       'edit any files' => TRUE,
     );
+    if (function_exists('file_entity_list_permissions')) {
+      unset($permissions['edit any files']);
+
+      foreach (file_entity_permissions_get_configured_types() as $type) {
+        $permissions += file_entity_list_permissions($type);
+      }
+    }
     foreach ($roles as $rid => $role) {
       user_role_change_permissions($rid, $permissions);
     }
