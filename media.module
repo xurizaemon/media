@@ -315,6 +315,7 @@ function media_theme() {
 function media_image_default_styles() {
   $styles = array();
   $styles['media_thumbnail'] = array(
+    'label' => 'Media thumbnail (100x100)',
     'effects' => array(
       array(
         'name' => 'image_scale_and_crop',
