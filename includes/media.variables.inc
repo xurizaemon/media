@@ -145,7 +145,7 @@ function media_variable_default($name = NULL) {
 
       'import_batch_size' => 20,
       'fromurl_supported_schemes' => array('http', 'https', 'ftp', 'smb', 'ftps'),
-      'icon_base_directory' => drupal_get_path('module', 'media') . '/images/icons',
+      'icon_base_directory' => file_default_scheme() . '://media-icons/',
       'icon_set' => 'default',
 
       // Whether to show the legacy Link and Original view modes. Set to TRUE

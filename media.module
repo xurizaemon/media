@@ -303,7 +303,7 @@ function media_theme() {
 
     // Display a file as a large icon.
     'media_formatter_large_icon' => array(
-      'variables' => array('file' => NULL, 'attributes' => array()),
+      'variables' => array('file' => NULL, 'attributes' => array(), 'style_name' => 'media_thumbnail'),
       'file' => 'includes/media.theme.inc',
     ),
   );
