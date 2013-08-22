@@ -52,6 +52,9 @@ function media_file_page_edit_multiple($files) {
   // Override the page title since each file form sets a title.
   drupal_set_title(t('Edit multiple files'));
 
+  // Allow other modules to alter the form.
+  drupal_alter('media_edit_multiple_form', $form);
+
   return $form;
 }
 
