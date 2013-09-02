@@ -53,26 +53,34 @@ function media_install() {
   // already set.
   $base = variable_get('media__icon_base_directory', NULL);
   if (!isset($base)) {
-    $default_base = file_default_scheme() . '://media-icons/';
+    $default_base = 'public://media-icons';
     variable_set('media__icon_base_directory', $default_base);
   }
-  _media_install_copy_icons();
+  try {
+    _media_install_copy_icons();
+  }
+  catch (Exception $e) {
+    watchdog_exception('media', $e);
+  }
 }
 
 /**
  * Copy the media file icons to files directory for use with image styles.
  */
 function _media_install_copy_icons() {
-  $destination = variable_get('media__icon_base_directory', file_default_scheme() . '://media-icons/') . '/' . variable_get('media__icon_set', 'default');
+  $destination = variable_get('media__icon_base_directory', 'public://media-icons') . '/' . variable_get('media__icon_set', 'default');
   if (!file_prepare_directory($destination, FILE_CREATE_DIRECTORY)) {
-    return FALSE;
+    throw new Exception("Unable to create directory $destination.");
   }
+  // @todo If we ever add another default icon set, this should copy all images from one directory up.
   $source = drupal_get_path('module', 'media') . '/images/icons/' . variable_get('media__icon_set', 'default');
   $files = file_scan_directory($source, '/.*\.(png|jpg)$/');
   foreach ($files as $file) {
-    file_unmanaged_copy($file->uri, $destination);
+    $result = file_unmanaged_copy($file->uri, $destination, FILE_EXISTS_REPLACE);
+    if (!$result) {
+      throw new Exception("Unable to copy {$file->uri} to $destination.");
+    }
   }
-  return TRUE;
 }
 
 /**
@@ -1017,10 +1025,27 @@ function media_update_7214() {
 }
 
 /**
- * Copy file type icons to public files directory.
+ * Skipped to run media_update_7217().
  */
 function media_update_7216() {
-  if (!_media_install_copy_icons()) {
-    throw new DrupalUpdateException('Unable to copy the media file t');
+  // Do nothing.
+}
+
+/**
+ * Copy file type icons to public files directory.
+ */
+function media_update_7217() {
+  // Remove any trailing slashes from the icon base directory variable.
+  $dir = variable_get('media__icon_base_directory');
+  if (!empty($dir)) {
+    $dir = rtrim($dir, '/');
+    variable_set('media__icon_base_directory', $dir);
+  }
+
+  try {
+    _media_install_copy_icons();
+  }
+  catch (Exception $e) {
+    throw new DrupalUpdateException($e->getMessage());
   }
 }
