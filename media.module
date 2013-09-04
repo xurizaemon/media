@@ -680,26 +680,6 @@ function media_dialog_get_theme_name() {
 }
 
 /**
- * A wrapper around simplexml to retrieve a given XML file.
- *
- * @param string $url
- *   The URL to the XML to retrieve.
- * @param bool $display_errors
- *   Optional; if TRUE, then we'll display errors to the end user. They'll be
- *   logged to the watchdog in any case.
- * @param bool $refresh
- *   Optional; if TRUE, then we'll force a new load of the XML. Otherwise,
- *   a cached version will be retrieved if possible.
- *
- * @return object
- *   A fully populated object, or FALSE on an error.
- */
-function media_retrieve_xml($url, $display_errors = FALSE, $refresh = FALSE) {
-  module_load_include('inc', 'media', 'includes/media.xml');
-  return _media_retrieve_xml($url, $display_errors, $refresh);
-}
-
-/**
  * This will parse a url or embedded code into a unique URI.
  *
  * The function will call all modules implementing hook_media_parse($url),
