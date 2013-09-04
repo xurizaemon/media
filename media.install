@@ -87,10 +87,31 @@ function _media_install_copy_icons() {
  * Implements hook_uninstall().
  */
 function media_uninstall() {
-  drupal_load('module', 'media');
-  foreach (media_variable_default() as $name => $value) {
-    media_variable_del($name);
-  }
+  // Remove variables.
+  variable_del('media__wysiwyg_title');
+  variable_del('media__wysiwyg_icon_title');
+  variable_del('media__wysiwyg_default_view_mode');
+  variable_del('media__wysiwyg_upload_directory');
+  variable_del('media__wysiwyg_allowed_types');
+  variable_del('media__wysiwyg_allowed_attributes');
+  variable_del('media__wysiwyg_browser_plugins');
+  variable_del('media__dialog_theme');
+  variable_del('media__max_filesize');
+  variable_del('media__debug');
+  variable_del('media__file_list_size');
+  variable_del('media__xml_cache_expire');
+  variable_del('media__import_batch_size');
+  variable_del('media__fromurl_supported_schemes');
+  variable_del('media__icon_base_directory');
+  variable_del('media__icon_set');
+  variable_del('media__show_deprecated_view_modes');
+  variable_del('media__show_file_type_rebuild_nag');
+  variable_del('media__field_select_media_text');
+  variable_del('media__field_remove_media_text');
+  variable_del('media__browser_library_empty_message');
+  variable_del('media__browser_pager_limit');
+  variable_del('media__browser_viewtype_default');
+  variable_del('media__display_types_migration_mess');
 }
 
 /**

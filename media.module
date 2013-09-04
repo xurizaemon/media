@@ -12,9 +12,6 @@
 /* INCLUDES                                  */
 /* ***************************************** */
 
-// A registry of variable_get defaults.
-require_once dirname(__FILE__) . '/includes/media.variables.inc';
-
 // Code relating to using media as a field.
 require_once dirname(__FILE__) . '/includes/media.fields.inc';
 
@@ -74,7 +71,7 @@ function media_entity_info_alter(&$entity_info) {
   // For sites that updated from Media 1.x, continue to provide these deprecated
   // view modes.
   // @see http://drupal.org/node/1051090
-  if (media_variable_get('show_deprecated_view_modes')) {
+  if (variable_get('media__show_deprecated_view_modes', FALSE)) {
     $entity_info['file']['view modes'] += array(
       'media_link' => array(
         'label' => t('Link'),
@@ -247,7 +244,7 @@ function media_admin_paths() {
 
   // If the media browser theme is set to the admin theme, ensure it gets set
   // as an admin path as well.
-  $dialog_theme = media_variable_get('dialog_theme');
+  $dialog_theme = variable_get('media__dialog_theme', '');
   if (empty($dialog_theme) || $dialog_theme == variable_get('admin_theme')) {
     $paths['media/browser'] = TRUE;
     $paths['media/browser/*'] = TRUE;
@@ -351,7 +348,7 @@ function media_page_alter(&$page) {
   // Check if there are file types that need migration and display a message
   // to user if so.
   $menu = menu_get_item();
-  if (media_variable_get('display_types_migration_mess') && $menu['path'] == 'admin/structure/file-types') {
+  if (variable_get('media__display_types_migration_mess', TRUE) && $menu['path'] == 'admin/structure/file-types') {
     if ($migratable_types = _media_get_migratable_file_types()) {
       drupal_set_message(t('There are disabled/deleted file types that can be migrated to their new alternatives. Visit <a href="!url">migration page</a> to get more information.', array('!url' => url('admin/structure/file-types/upgrade'))));
     }
@@ -607,7 +604,7 @@ function media_file_list_element_process($element, $edit, $form_state, $form) {
   $element['list'] = array(
     '#type'     => 'select',
     '#options'  => $element['#options'],
-    '#size'     => media_variable_get('file_list_size'),
+    '#size'     => variable_get('media__file_list_size', 10),
   );
   return $element;
 }
@@ -679,7 +676,7 @@ function media_library() {
  * will default to the administration theme, unless set otherwise.
  */
 function media_dialog_get_theme_name() {
-  return media_variable_get('dialog_theme', variable_get('admin_theme'));
+  return variable_get('media__dialog_theme', variable_get('admin_theme'));
 }
 
 /**
