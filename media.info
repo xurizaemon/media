@@ -7,6 +7,8 @@ dependencies[] = file_entity
 dependencies[] = image
 dependencies[] = views
 
+test_dependencies[] = token
+
 files[] = includes/MediaReadOnlyStreamWrapper.inc
 files[] = includes/MediaBrowserPluginInterface.inc
 files[] = includes/MediaBrowserPlugin.inc
