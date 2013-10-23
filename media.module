@@ -914,7 +914,7 @@ function media_element_process(&$element, &$form_state, $form) {
       ),
     ),
     '#weight' => 20,
-    '#access' => file_entity_access('update', $file),
+    '#access' => $file ? file_entity_access('update', $file) : TRUE, // only do perm check for existing files
   );
   $element['remove'] = array(
     '#type' => 'link',
