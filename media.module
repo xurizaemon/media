@@ -599,13 +599,6 @@ function media_multi_load($fids) {
   return file_load_multiple(explode(' ', $fids));
 }
 
-/**
- * Returns the type of the media file to be used as a page title.
- */
-function media_type_page_title($type) {
-  return t('@type media type settings', array('@type' => $type->label));
-}
-
 /* ***************************************** */
 /* Callbacks                                 */
 /* ***************************************** */
