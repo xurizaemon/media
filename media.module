@@ -995,13 +995,12 @@ function media_get_thumbnail_preview($file, $link = NULL) {
   if (!file_type_is_enabled($file->type)) {
     $file->type = file_get_type($file);
   }
-  // @todo should CSS be attached to the form element here?
-  // $element['#attached']['css'][] = drupal_get_path('module', 'media') . '/css/media.css';
-  drupal_add_css(drupal_get_path('module', 'media') . '/css/media.css');
+
   $preview = file_view_file($file, 'preview');
   $preview['#show_names'] = TRUE;
   $preview['#add_link'] = $link;
   $preview['#theme_wrappers'][] = 'media_thumbnail';
+  $preview['#attached']['css'][] = drupal_get_path('module', 'media') . '/css/media.css';
   return $preview;
 }
 
