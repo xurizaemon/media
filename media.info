@@ -20,5 +20,6 @@ files[] = includes/media_views_plugin_style_media_browser.inc
 files[] = tests/media.test
 files[] = tests/media.entity.test
 files[] = tests/media.file.usage.test
+files[] = tests/media.macro.test
 
 configure = admin/config/media/browser

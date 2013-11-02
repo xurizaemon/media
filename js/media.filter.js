@@ -14,14 +14,14 @@
      * @param content
      */
     replaceTokenWithPlaceholder: function(content) {
-      var tagmap = Drupal.media.filter.ensure_tagmap(),
+      Drupal.media.filter.ensure_tagmap()
+      var tagmap = Drupal.settings.tagmap,
         matches = content.match(/\[\[.*?\]\]/g),
-        media_definition,
-        id = 0;
+        media_definition;
 
       if (matches) {
-        var i = 1;
         for (var macro in tagmap) {
+          // We cant use indexOf because of IE.
           var index = $.inArray(macro, matches);
           if (index !== -1) {
             var media_json = macro.replace('[[', '').replace(']]', '');
@@ -38,10 +38,9 @@
               var element = Drupal.media.filter.create_element(tagmap[macro], media_definition);
               var markup = Drupal.media.filter.outerHTML(element);
 
-              content = content.replace(macro, Drupal.media.filter.getWrapperStart(i) + markup + Drupal.media.filter.getWrapperEnd(i));
+              content = content.replace(macro, markup);
             }
           }
-          i++;
         }
       }
       return content;
@@ -52,29 +51,23 @@
      * @param content
      */
     replacePlaceholderWithToken: function(content) {
-      var tagmap = Drupal.media.filter.ensure_tagmap();
-      var i = 1;
-      for (var macro in tagmap) {
-        var startTag = Drupal.media.filter.getWrapperStart(i), endTag = Drupal.media.filter.getWrapperEnd(i);
-        var startPos = content.indexOf(startTag), endPos = content.indexOf(endTag);
-        if (startPos !== -1 && endPos !== -1) {
-          // If the placeholder wrappers are empty, remove the macro too.
-          if (endPos - startPos - startTag.length === 0) {
-            macro = '';
-          }
-          content = content.substr(0, startPos) + macro + content.substr(endPos + (new String(endTag)).length);
-        }
-        i++;
-      }
+      Drupal.media.filter.ensure_tagmap();
+      // Convert all xhtml markup to html for reliable matching/replacing.
+      content = content.replace(/[\s]\/\>/g, '>');
+
+      // Re-build the macros in case any element has changed in the editor.
+      $('.media-element', content).each(function(i, element) {
+        var markup = Drupal.media.filter.outerHTML($(element));
+          macro = Drupal.media.filter.create_macro($(element));
+
+        // Store the macro => html for more efficient rendering in
+        // replaceTokenWithPlaceholder().
+        Drupal.settings.tagmap[macro] = markup;
+        // Replace the media element with its macro.
+        content = content.replace(markup, macro);
+      });
+
       return content;
-    },
-
-    getWrapperStart: function(i) {
-      return '<!--MEDIA-WRAPPER-START-' + i + '-->';
-    },
-
-    getWrapperEnd: function(i) {
-      return '<!--MEDIA-WRAPPER-END-' + i + '-->';
     },
 
     /**
@@ -199,7 +192,7 @@
      * @param element (jQuery object)
      */
     outerHTML: function (element) {
-      return $('<div>').append(element.eq(0).clone()).html();
+      return element[0].outerHTML || $('<div>').append(element.eq(0).clone()).html();
     },
 
     /**
@@ -225,9 +218,9 @@
       }
       Drupal.settings.tagmap[macro] = markup;
 
-      // Return the wrapped html code to insert in an editor and use it with
+      // Return the html code to insert in an editor and use it with
       // replacePlaceholderWithToken()
-      return Drupal.media.filter.getWrapperStart(i) + markup + Drupal.media.filter.getWrapperEnd(i);
+      return markup;
     },
 
     /**
