@@ -48,7 +48,8 @@ class MediaWysiwygOverridesTest extends MediaTestHelper {
     $nid = $this->createNode($file->fid);
 
     $this->drupalGet('node/' . $nid);
-    $this->assertRaw('height="100" width="100"', t('Image displays with default attributes.'));
+    $this->assertRaw('width="100"', t('Image displays with default width attribute.'));
+    $this->assertRaw('height="100"', t('Image displays with default height attribute.'));
 
     // Create a node with a style attribute.
     $attributes = array(
