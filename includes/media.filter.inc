@@ -676,36 +676,34 @@ function media_get_file_without_label($file, $view_mode, $settings = array()) {
     // use-case, and image theme functions have their own structure for render
     // arrays.
     if (isset($element['#theme'])) {
-      switch ($element['#theme']) {
-        case 'image':
-        case 'image_style':
-          // theme_image() and theme_image_style() require the 'alt' attributes to
-          // be passed separately from the 'attributes' array. (see
-          // http://drupal.org/node/999338). Until that's fixed, implement this
-          // special-case logic. Image formatters using other theme functions are
-          // responsible for their own 'alt' attribute handling. See
-          // theme_media_formatter_large_icon() for an example.
-          if (empty($element['#alt']) && isset($settings['attributes']['alt'])) {
-            $element['#alt'] = $settings['attributes']['alt'];
-          }
-          break;
+      // theme_image() and theme_image_style() require the 'alt' attributes to
+      // be passed separately from the 'attributes' array. (see
+      // http://drupal.org/node/999338). Until that's fixed, implement this
+      // special-case logic. Image formatters using other theme functions are
+      // responsible for their own 'alt' attribute handling. See
+      // theme_media_formatter_large_icon() for an example.
+      if (in_array($element['#theme'], array('image', 'image_style'))) {
+        if (empty($element['#alt']) && isset($settings['attributes']['alt'])) {
+          $element['#alt'] = $settings['attributes']['alt'];
+        }
+      }
+      // theme_image_formatter() and any potential replacements, such as
+      // theme_colorbox_image_formatter(), also require attribute handling.
+      elseif (strpos($element['#theme'], 'image_formatter') !== FALSE) {
+        // theme_image_formatter() requires the attributes to be
+        // set on the item rather than the element itself.
+        if (empty($element['#item']['attributes'])) {
+          $element['#item']['attributes'] = $settings['attributes'];
+        }
 
-        case 'image_formatter':
-          // theme_image_formatter() requires the attributes to be
-          // set on the item rather than the element itself.
-          if (empty($element['#item']['attributes'])) {
-            $element['#item']['attributes'] = $settings['attributes'];
+        // theme_image_formatter() also requires alt, title, height, and
+        // width attributes to be set on the item rather than within its
+        // attributes array.
+        foreach (array('alt', 'title', 'width', 'height') as $attr) {
+          if (isset($settings['attributes'][$attr])) {
+            $element['#item'][$attr] = $settings['attributes'][$attr];
           }
-
-          // theme_image_formatter() also requires alt, title, height, and
-          // width attributes to be set on the item rather than within its
-          // attributes array.
-          foreach (array('alt', 'title', 'width', 'height') as $attr) {
-            if (isset($settings['attributes'][$attr])) {
-              $element['#item'][$attr] = $settings['attributes'][$attr];
-            }
-          }
-          break;
+        }
       }
     }
   }
