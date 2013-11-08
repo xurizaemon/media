@@ -115,7 +115,7 @@
 
       // Move attributes from the file info array to the placeholder element.
       if (info.attributes) {
-        $.each(Drupal.media.filter.allowed_attributes(), function(i, a) {
+        $.each(Drupal.settings.media.wysiwyg_allowed_attributes, function(i, a) {
           if (info.attributes[a]) {
             element.attr(a, info.attributes[a]);
           }
@@ -175,7 +175,7 @@
         file_info.attributes = {};
 
         // Extract whitelisted attributes.
-        $.each(Drupal.media.filter.allowed_attributes(), function(i, a) {
+        $.each(Drupal.settings.media.wysiwyg_allowed_attributes, function(i, a) {
           if (value = element.attr(a)) {
             file_info.attributes[a] = value;
           }
@@ -229,15 +229,6 @@
     ensure_tagmap: function () {
       Drupal.settings.tagmap = Drupal.settings.tagmap || {};
       return Drupal.settings.tagmap;
-    },
-
-    /**
-     * Ensures the wysiwyg_allowed_attributes and returns it.
-     * In case of an error the default settings are returned.
-     */
-    allowed_attributes: function () {
-      Drupal.settings.wysiwyg_allowed_attributes = Drupal.settings.wysiwyg_allowed_attributes || ['height', 'width', 'hspace', 'vspace', 'border', 'align', 'style', 'alt', 'title', 'class', 'id', 'usemap'];
-      return Drupal.settings.wysiwyg_allowed_attributes;
     }
   }
 })(jQuery);
