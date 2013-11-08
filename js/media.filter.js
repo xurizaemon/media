@@ -71,32 +71,6 @@
     },
 
     /**
-     * Register new element and returns the placeholder markup.
-     *
-     * @param formattedMedia a formatted media object as given by the onSubmit
-     * function of the media Style popup.
-     * @param fid the file id.
-     *
-     * @return The registered element.
-     */
-    registerNewElement: function (formattedMedia, fid) {
-      var element = Drupal.media.filter.create_element(formattedMedia.html, {
-        fid: fid,
-        view_mode: formattedMedia.type,
-        attributes: formattedMedia.options
-      });
-
-      var markup = Drupal.media.filter.outerHTML(element),
-        macro = Drupal.media.filter.create_macro(element);
-
-      // Store macro/markup pair in the tagmap.
-      Drupal.media.filter.ensure_tagmap();
-      Drupal.settings.tagmap[macro] = markup;
-
-      return element;
-    },
-
-    /**
      * Serializes file information as a url-encoded JSON object and stores it as a
      * data attribute on the html element.
      *
