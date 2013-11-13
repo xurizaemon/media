@@ -338,11 +338,6 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
             $settings[$dimension] = $settings['attributes'][$dimension];
           }
         }
-        // If the element is floated via WYSIWYG editor functionality, delegate
-        // that information to the outer element.
-        if (!empty($css_properties['float'])) {
-          $settings['float'] = $css_properties['float'];
-        }
       }
     }
   }
@@ -406,10 +401,6 @@ function media_token_to_markup($match, $wysiwyg = FALSE) {
         'media-element-container',
         'media-' . $element['content']['file']['#view_mode']
       );
-      // Add the float information to the outer element.
-      if (!empty($settings['float'])) {
-        $element['content']['#attributes']['class'][] = 'media-float-' . $settings['float'];
-      }
     }
   }
   drupal_alter('media_token_to_markup', $element, $tag_info, $settings);
