@@ -18,8 +18,3 @@
 #media-wysiwyg-format-form .form-item-format label {
   display: inline;
 }
-
-/* Plupload */
-body.page-media-wysiwyg-format-form #media-browser-page .plupload_start {
-    display: none;
-}

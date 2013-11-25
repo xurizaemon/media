@@ -1086,3 +1086,12 @@ function media_update_7219() {
 function media_update_7220() {
   variable_del('media__file_list_size');
 }
+
+/**
+ * Enable the Media Bulk Upload submodule.
+ */
+function media_update_7221() {
+  if (module_exists('multiform') && module_exists('plupload')) {
+    module_enable(array('media_bulk_upload'));
+  }
+}

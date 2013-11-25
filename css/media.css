@@ -158,11 +158,3 @@
 .media-widget .preview .media-item .label-wrapper label:hover {
   cursor: pointer;
 }
-
-/* Multiedit */
-
-.media-multiedit-form .media-edit-form {
-  border-bottom: 1px solid #AAAAAA;
-  margin-bottom: 1em;
-  margin-top: 1.5em;
-}
