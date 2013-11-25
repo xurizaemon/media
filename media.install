@@ -88,7 +88,6 @@ function media_uninstall() {
   variable_del('media__dialog_theme');
   variable_del('media__max_filesize');
   variable_del('media__debug');
-  variable_del('media__file_list_size');
   variable_del('media__xml_cache_expire');
   variable_del('media__import_batch_size');
   variable_del('media__fromurl_supported_schemes');
@@ -1079,4 +1078,11 @@ function media_update_7219() {
   if (module_exists('wysiwyg')) {
     module_enable(array('media_wysiwyg'));
   }
+}
+
+/**
+ * Delete the deprecated media__file_list_size variable.
+ */
+function media_update_7220() {
+  variable_del('media__file_list_size');
 }

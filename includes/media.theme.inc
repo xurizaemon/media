@@ -7,21 +7,6 @@
  * Theming functions for the Media module.
  */
 
-
-/**
- * Display a media file list.
- *
- * @param array $element
- *   The form element.
- *
- * @return string
- *   HTML of the file list
- */
-function theme_media_file_list($element) {
-  // Add the CSS for our display.
-  return '<div class="media-file-list">' . theme('form_element', $element, $element['#children']) . '</div>';
-}
-
 /**
  * Add messages to the page.
  */

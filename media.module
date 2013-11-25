@@ -257,11 +257,6 @@ function media_permission() {
  */
 function media_theme() {
   return array(
-    // The default media file list form element.
-    'media_file_list' => array(
-      'variables' => array('element' => NULL),
-    ),
-
     // A preview of the uploaded file.
     'media_thumbnail' => array(
       'render element' => 'element',
@@ -567,18 +562,6 @@ function media_multi_load($fids) {
 /* ***************************************** */
 /* Callbacks                                 */
 /* ***************************************** */
-
-/**
- * Process callback for the media_browser element.
- */
-function media_file_list_element_process($element, $edit, $form_state, $form) {
-  $element['list'] = array(
-    '#type'     => 'select',
-    '#options'  => $element['#options'],
-    '#size'     => variable_get('media__file_list_size', 10),
-  );
-  return $element;
-}
 
 /**
  * Implements hook_library().
