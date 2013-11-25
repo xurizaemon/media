@@ -1071,3 +1071,12 @@ function media_update_7218() {
 
   variable_del('media__xml_cache_expire');
 }
+
+/**
+ * Enable the Media WYSIWYG submodule.
+ */
+function media_update_7219() {
+  if (module_exists('wysiwyg')) {
+    module_enable(array('media_wysiwyg'));
+  }
+}

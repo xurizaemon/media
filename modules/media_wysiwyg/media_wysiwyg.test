@@ -8,7 +8,7 @@
 /**
  * Defines base class for media test cases.
  */
-class MediaTestHelper extends DrupalWebTestCase {
+class MediaWYSIWYGTestHelper extends DrupalWebTestCase {
 
   /**
    * Enable media and file entity modules for testing.
@@ -18,7 +18,7 @@ class MediaTestHelper extends DrupalWebTestCase {
     if (isset($modules[0]) && is_array($modules[0])) {
       $modules = $modules[0];
     }
-    $modules[] = 'media';
+    $modules[] = 'media_wysiwyg';
     parent::setUp($modules);
   }
 

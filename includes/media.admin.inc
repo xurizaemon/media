@@ -181,47 +181,6 @@ function media_admin_config_browser($form, &$form_state) {
     '#default_value' => variable_get('media__dialog_theme', ''),
   );
 
-  // Additional configuration if the WYSIWYG module is enabled.
-  $form['wysiwyg'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('WYSIWYG configuration'),
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#access' => module_exists('wysiwyg'),
-  );
-  $plugins = media_get_browser_plugin_info();
-  $form['wysiwyg']['media__wysiwyg_browser_plugins'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Enabled browser plugins'),
-    '#options' => array(),
-    '#required' => FALSE,
-    '#default_value' => variable_get('media__wysiwyg_browser_plugins', array()),
-    '#description' => t('If no plugins are selected, they will all be available.'),
-  );
-  foreach ($plugins as $key => $plugin) {
-    $form['wysiwyg']['media__wysiwyg_browser_plugins']['#options'][$key] = !empty($plugin['title']) ? $plugin['title'] : $key;
-  }
-  $form['wysiwyg']['media__wysiwyg_upload_directory'] = array(
-    '#type' => 'textfield',
-    '#title' => t("File directory for uploaded media"),
-    '#default_value' => variable_get('media__wysiwyg_upload_directory', ''),
-    '#description' => t('Optional subdirectory within the upload destination where files will be stored. Do not include preceding or trailing slashes.'),
-  );
-
-  if (module_exists('token')) {
-    $form['wysiwyg']['media__wysiwyg_upload_directory']['#description'] .= t('This field supports tokens.');
-    $form['wysiwyg']['tokens'] = array(
-      '#theme' => 'token_tree',
-      '#dialog' => TRUE,
-    );
-  }
-
-  $form['wysiwyg']['media__wysiwyg_allowed_types'] = array(
-    '#type' => 'checkboxes',
-    '#title' => t('Allowed types in WYSIWYG'),
-    '#options' => file_entity_type_get_names(),
-    '#default_value' => variable_get('media__wysiwyg_allowed_types', array('audio', 'image', 'video', 'document')),
-  );
   $form['array_filter'] = array('#type' => 'value', '#value' => TRUE);
 
   $form['#submit'][] = 'media_admin_config_browser_pre_submit';
@@ -235,10 +194,5 @@ function media_admin_config_browser_pre_submit(&$form, &$form_state) {
   if (!$form_state['values']['media__dialog_theme']) {
     variable_del('media__dialog_theme');
     unset($form_state['values']['media__dialog_theme']);
-  }
-  $wysiwyg_browser_plugins = array_unique(array_values($form_state['values']['media__wysiwyg_browser_plugins']));
-  if (empty($wysiwyg_browser_plugins[0])) {
-    variable_del('media__wysiwyg_browser_plugins');
-    unset($form_state['values']['media__wysiwyg_browser_plugins']);
   }
 }
