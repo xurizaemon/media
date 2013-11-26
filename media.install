@@ -86,20 +86,11 @@ function media_uninstall() {
   variable_del('media__wysiwyg_allowed_attributes');
   variable_del('media__wysiwyg_browser_plugins');
   variable_del('media__dialog_theme');
-  variable_del('media__max_filesize');
-  variable_del('media__debug');
-  variable_del('media__xml_cache_expire');
   variable_del('media__import_batch_size');
   variable_del('media__fromurl_supported_schemes');
   variable_del('media__icon_base_directory');
   variable_del('media__icon_set');
   variable_del('media__show_deprecated_view_modes');
-  variable_del('media__show_file_type_rebuild_nag');
-  variable_del('media__field_select_media_text');
-  variable_del('media__field_remove_media_text');
-  variable_del('media__browser_library_empty_message');
-  variable_del('media__browser_pager_limit');
-  variable_del('media__browser_viewtype_default');
 }
 
 /**
@@ -1103,4 +1094,19 @@ function media_update_7221() {
  */
 function media_update_7222() {
   variable_del('media__display_types_migration_mess');
+}
+
+/**
+ * Delete legacy variables.
+ */
+function media_update_7223() {
+  variable_del('media__max_filesize');
+  variable_del('media__debug');
+  variable_del('media__xml_cache_expire');
+  variable_del('media__show_file_type_rebuild_nag');
+  variable_del('media__field_select_media_text');
+  variable_del('media__field_remove_media_text');
+  variable_del('media__browser_library_empty_message');
+  variable_del('media__browser_pager_limit');
+  variable_del('media__browser_viewtype_default');
 }
