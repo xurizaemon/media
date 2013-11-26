@@ -100,7 +100,6 @@ function media_uninstall() {
   variable_del('media__browser_library_empty_message');
   variable_del('media__browser_pager_limit');
   variable_del('media__browser_viewtype_default');
-  variable_del('media__display_types_migration_mess');
 }
 
 /**
@@ -918,12 +917,15 @@ function media_update_7208() {
 }
 
 /**
- * DEPRECATED: Update {file_managed}.type with the new file types provided by
- * file_entity. (Types migration has been moved to admin/structure/file-types/upgrade',
- * where can be executed manually.)
+ * Enable the hidden media_migrate_file_types module to provide a UI to update
+ * {file_managed}.type with the new file types provided by file_entity.
  */
 function media_update_7209() {
+  drupal_load('module', 'media_migrate_file_types');
 
+  if (_media_migrate_file_types_get_migratable_file_types()) {
+    module_enable('media_migrate_file_types');
+  }
 }
 
 /**
@@ -1094,4 +1096,11 @@ function media_update_7221() {
   if (module_exists('multiform') && module_exists('plupload')) {
     module_enable(array('media_bulk_upload'));
   }
+}
+
+/**
+ * Delete the deprecated media__display_types_migration_mess variable.
+ */
+function media_update_7222() {
+  variable_del('media__display_types_migration_mess');
 }
