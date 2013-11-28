@@ -65,7 +65,7 @@ function media_entity_info_alter(&$entity_info) {
   // For sites that updated from Media 1.x, continue to provide these deprecated
   // view modes.
   // @see http://drupal.org/node/1051090
-  if (variable_get('media_show_deprecated_view_modes', FALSE)) {
+  if (variable_get('media__show_deprecated_view_modes', FALSE)) {
     $entity_info['file']['view modes'] += array(
       'media_link' => array(
         'label' => t('Link'),
@@ -183,7 +183,7 @@ function media_admin_paths() {
 
   // If the media browser theme is set to the admin theme, ensure it gets set
   // as an admin path as well.
-  $dialog_theme = variable_get('media_dialog_theme', '');
+  $dialog_theme = variable_get('media__dialog_theme', '');
   if (empty($dialog_theme) || $dialog_theme == variable_get('admin_theme')) {
     $paths['media/browser'] = TRUE;
     $paths['media/browser/*'] = TRUE;
@@ -453,7 +453,7 @@ function media_library() {
  * will default to the administration theme, unless set otherwise.
  */
 function media_dialog_get_theme_name() {
-  return variable_get('media_dialog_theme', variable_get('admin_theme'));
+  return variable_get('media__dialog_theme', variable_get('admin_theme'));
 }
 
 /**
