@@ -20,11 +20,11 @@ function media_wysiwyg_media_plugin() {
 
   // Plugin definition.
   $plugins['media'] = array(
-    'title' => variable_get('media__wysiwyg_title', t('Media browser')),
+    'title' => variable_get('media_wysiwyg_title', t('Media browser')),
     'vendor url' => 'http://drupal.org/project/media',
     'icon path' => drupal_get_path('module', 'media_wysiwyg') . '/images',
     'icon file' => 'wysiwyg-media.gif',
-    'icon title' => variable_get('media__wysiwyg_icon_title', t('Add media')),
+    'icon title' => variable_get('media_wysiwyg_icon_title', t('Add media')),
     // @todo: move this to the plugin directory for the wysiwyg plugin.
     'js path' => drupal_get_path('module', 'media_wysiwyg') . '/js',
     'js file' => 'wysiwyg-media.js',
@@ -32,9 +32,9 @@ function media_wysiwyg_media_plugin() {
     'css file' => 'media_wysiwyg.css',
     'settings' => array(
       'global' => array(
-        'enabledPlugins' => variable_get('media__wysiwyg_browser_plugins', array()),
-        'file_directory' => variable_get('media__wysiwyg_upload_directory', ''),
-        'types' => variable_get('media__wysiwyg_allowed_types', array('audio', 'image', 'video', 'document')),
+        'enabledPlugins' => variable_get('media_wysiwyg_browser_plugins', array()),
+        'file_directory' => variable_get('media_wysiwyg_upload_directory', ''),
+        'types' => variable_get('media_wysiwyg_allowed_types', array('audio', 'image', 'video', 'document')),
         'id' => 'media_wysiwyg',
       ),
     ),
@@ -68,6 +68,6 @@ function media_wysiwyg_include_browser_js() {
     }
   }
   // Add wysiwyg-specific settings.
-  $settings = array('wysiwyg_allowed_attributes' => variable_get('media__wysiwyg_allowed_attributes', _media_wysiwyg_wysiwyg_allowed_attributes_default()));
+  $settings = array('wysiwyg_allowed_attributes' => variable_get('media_wysiwyg_allowed_attributes', _media_wysiwyg_wysiwyg_allowed_attributes_default()));
   drupal_add_js(array('media' => $settings), 'setting');
 }
