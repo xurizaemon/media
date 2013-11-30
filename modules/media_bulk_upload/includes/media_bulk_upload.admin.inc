@@ -114,7 +114,7 @@ function media_bulk_upload_import_batch_import_files($files, &$context) {
   $files =& $context['sandbox']['files'];
 
   // Take a cut of files.  Let's do 10 at a time.
-  $import_batch_size = variable_get('media_import_batch_size', 20);
+  $import_batch_size = variable_get('media_bulk_upload_import_batch_size', 20);
   $length = (count($files) > $import_batch_size) ? $import_batch_size : count($files);
   $to_process = array_splice($files, 0, $length);
   $image_in_message = '';
