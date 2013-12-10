@@ -77,16 +77,6 @@ function media_entity_info_alter(&$entity_info) {
 }
 
 /**
- * Access callback for files. This function is deprecated.
- *
- * @todo Completely remove this function in favor of file_entity_access after
- * a few releases, to ensure rest of contib catches up.
- */
-function media_access($op, $account = NULL) {
-  return user_access('administer files', $account);
-}
-
-/**
  * Implements hook_menu().
  */
 function media_menu() {
