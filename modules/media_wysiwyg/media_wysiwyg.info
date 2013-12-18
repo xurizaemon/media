@@ -4,9 +4,10 @@ package = Media
 core = 7.x
 
 dependencies[] = media
-dependencies[] = wysiwyg
 
+test_dependencies[] = ckeditor
 test_dependencies[] = token
+test_dependencies[] = wysiwyg
 
 files[] = media_wysiwyg.test
 files[] = tests/media_wysiwyg.file_usage.test
