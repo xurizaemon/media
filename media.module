@@ -259,7 +259,7 @@ function media_ajax_upload() {
   foreach ($form_parents as $parent) {
     $current_element = $current_element[$parent];
   }
-  $current_file_count = isset($current_element['#media_attach_delta']) ? $current_element['#media_attach_delta'] : 0;
+  $current_file_count = isset($current_element['#file_upload_delta']) ? $current_element['#file_upload_delta'] : 0;
 
   // Process user input. $form and $form_state are modified in the process.
   drupal_process_form($form['#form_id'], $form, $form_state);
@@ -270,7 +270,7 @@ function media_ajax_upload() {
   }
 
   // Add the special Ajax class if a new file was added.
-  if (isset($form['#media_attach_delta']) && $current_file_count < $form['#media_attach_delta']) {
+  if (isset($form['#file_upload_delta']) && $current_file_count < $form['#file_upload_delta']) {
     $form[$current_file_count]['#attributes']['class'][] = 'ajax-new-content';
   }
   // Otherwise just add the new content class on a placeholder.
