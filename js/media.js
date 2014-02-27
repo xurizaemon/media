@@ -109,7 +109,7 @@ Drupal.media.disableFields = function (event) {
   // behaviors) are excuted before any timeout functions are called, so we
   // don't have to worry about the fields being re-enabled too soon.
   // @todo If the previous sentence is true, why not set the timeout to 0?
-  var $fieldsToTemporarilyDisable = $('div.media-widget a.browse').not($enabledFields).not(':disabled');
+  var $fieldsToTemporarilyDisable = $('div.media-widget input.attach').not($enabledFields).not(':disabled');
   $fieldsToTemporarilyDisable.attr('disabled', 'disabled');
   setTimeout(function (){
     $fieldsToTemporarilyDisable.attr('disabled', false);
