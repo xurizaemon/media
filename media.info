@@ -17,7 +17,7 @@ files[] = includes/MediaBrowserView.inc
 files[] = includes/MediaEntityTranslationHandler.inc
 files[] = includes/media_views_plugin_display_media_browser.inc
 files[] = includes/media_views_plugin_style_media_browser.inc
-files[] = media.test
+files[] = tests/media.test
 
 configure = admin/config/media/browser
 
