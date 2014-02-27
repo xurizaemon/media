@@ -589,7 +589,6 @@ function media_recursive_check_plain(&$value, $key) {
  * Implements hook_element_info().
  */
 function media_element_info() {
-  $types = array();
   $types['media'] = array(
     '#input' => TRUE,
     '#process' => array('media_element_process'),
@@ -629,7 +628,6 @@ function media_element_info() {
  * Process callback for the media form element.
  */
 function media_element_process($element, &$form_state, $form) {
-
   $fid = isset($element['#value']['fid']) ? $element['#value']['fid'] : 0;
 
   // Set some default element properties.
@@ -665,7 +663,7 @@ function media_element_process($element, &$form_state, $form) {
 
   // Substitute the JS preview for a true file thumbnail once the file is
   // attached.
-  if ($element['#file']) {
+  if ($fid && $element['#file']) {
     $element['preview']['content'] = media_get_thumbnail_preview($element['#file']);
   }
 
