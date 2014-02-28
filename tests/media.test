@@ -188,6 +188,81 @@ class MediaFileFieldTestCase extends DrupalWebTestCase {
 }
 
 /**
+ * Tests the 'media' element type settings.
+ */
+class MediaElementSettingsTestCase extends MediaFileFieldTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Media element settings test',
+      'description' => 'Tests the media element type JavaScript settings.',
+      'group' => 'Media',
+    );
+  }
+
+  /**
+   * Tests the media element type settings.
+   */
+  function testElementSettings() {
+    $form = array(
+      '#type' => 'media',
+    );
+    drupal_render($form);
+    $javascript = drupal_get_js();
+    $global = array(
+      'media' => array(
+        'global' => array(
+          'global' => array(
+            'types' => array(),
+            'schemes' => array(),
+          ),
+        ),
+      ),
+    );
+    $settings = drupal_json_encode(drupal_array_merge_deep_array($global));
+    $this->assertTrue(strpos($javascript, $settings) > 0, 'Rendered media element adds the global settings.');
+  }
+
+  /**
+   * Tests the media file field widget settings.
+   */
+  function testWidgetSettings() {
+    // Use 'page' instead of 'article', so that the 'article' image field does
+    // not conflict with this test. If in the future the 'page' type gets its
+    // own default file or image field, this test can be made more robust by
+    // using a custom node type.
+    $type_name = 'page';
+    $field_name = strtolower($this->randomName());
+    $this->createFileField($field_name, $type_name);
+    $field = field_info_field($field_name);
+    $instance = field_info_instance('node', $field_name, $type_name);
+
+    $javascript = $this->drupalGet("node/add/$type_name");
+    $field_widget = array(
+        'elements' => array(
+          '#edit-' . $field_name . '-' . LANGUAGE_NONE . '-0' => array(
+            'global' => array(
+              'types' => array(
+                0 => 'image',
+              ),
+              'enabledPlugins' => array(),
+              'schemes' => array(
+                0 => 'public',
+                1 => 'private',
+              ),
+              'file_directory' => '',
+              'file_extensions' => 'txt',
+              'max_filesize' => '',
+              'uri_scheme' => 'public',
+            ),
+          ),
+        ),
+    );
+    $settings = drupal_json_encode(drupal_array_merge_deep_array($field_widget));
+    $this->assertTrue(strpos($javascript, $settings) > 0, 'Media file field widget adds element-specific settings.');
+  }
+}
+
+/**
  * Tests file handling with node revisions.
  */
 class MediaFileFieldRevisionTestCase extends MediaFileFieldTestCase {
