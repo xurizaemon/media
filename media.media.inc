@@ -50,10 +50,9 @@ function media_query_media_browser_alter($query) {
   }
   $alias = $tables['file_managed']['alias'];
 
-  $params = drupal_get_query_parameters();
   // How do we validate these?  I don't know.
   // I think PDO should protect them, but I'm not 100% certain.
-  array_walk_recursive($params, 'media_recursive_check_plain');
+  $params = media_get_browser_params();
 
   $types = !empty($params['types']) ? $params['types'] : NULL;
   $url_include_patterns = !empty($params['url_include_patterns']) ? $params['url_include_patterns'] : NULL;

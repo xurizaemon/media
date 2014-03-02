@@ -12,7 +12,7 @@ function media_browser($selected = NULL) {
   $output = array();
   $output['#attached']['library'][] = array('media', 'media_browser_page');
 
-  $params = media_set_browser_params();
+  $params = media_get_browser_params();
 
   // If one or more files have been selected, the browser interaction is now
   // complete. Return empty page content to the dialog which now needs to close,
