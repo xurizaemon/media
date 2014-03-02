@@ -21,7 +21,7 @@ class MediaFileFieldTestCase extends DrupalWebTestCase {
     }
     $modules[] = 'media';
     parent::setUp($modules);
-    $this->admin_user = $this->drupalCreateUser(array('access content', 'access administration pages', 'administer site configuration', 'administer users', 'administer permissions', 'administer content types', 'administer nodes', 'administer files', 'bypass node access', 'bypass file access'));
+    $this->admin_user = $this->drupalCreateUser(array('access content', 'view files', 'view own files', 'access administration pages', 'administer site configuration', 'administer users', 'administer permissions', 'administer content types', 'administer nodes', 'administer files', 'bypass node access', 'bypass file access'));
     $this->drupalLogin($this->admin_user);
   }
 
@@ -258,9 +258,6 @@ class MediaAdminTestCase extends MediaFileFieldTestCase {
 
   function setUp() {
     parent::setUp();
-    // Logout the admin_user.
-    $this->drupalLogout();
-
     // Remove the "view files" permission which is set
     // by default for all users so we can test this permission
     // correctly.
@@ -279,7 +276,6 @@ class MediaAdminTestCase extends MediaFileFieldTestCase {
    * Tests that the table sorting works on the files admin pages.
    */
   function testFilesAdminSort() {
-    $this->drupalLogin($this->admin_user);
     $i = 0;
     foreach (array('dd', 'aa', 'DD', 'bb', 'cc', 'CC', 'AA', 'BB') as $prefix) {
       $this->createFileEntity(array('filepath' => $prefix . $this->randomName(6), 'timestamp' => $i));
@@ -320,8 +316,6 @@ class MediaAdminTestCase extends MediaFileFieldTestCase {
    * Tests files overview with different user permissions.
    */
   function testFilesAdminPages() {
-    $this->drupalLogin($this->admin_user);
-
     $files['public_image'] = $this->createFileEntity(array('scheme' => 'public', 'uid' => $this->base_user_1->uid, 'type' => 'image'));
     $files['public_document'] = $this->createFileEntity(array('scheme' => 'public', 'uid' => $this->base_user_2->uid, 'type' => 'document'));
     $files['private_image'] = $this->createFileEntity(array('scheme' => 'private', 'uid' => $this->base_user_1->uid, 'type' => 'image'));
@@ -399,21 +393,231 @@ class MediaAdminTestCase extends MediaFileFieldTestCase {
 }
 
 /**
- * Tests the media browser.
+ * Tests the media browser 'Library' tab.
  */
-class MediaBrowserTestCase extends MediaFileFieldTestCase {
+class MediaBrowserLibraryTestCase extends MediaFileFieldTestCase {
   public static function getInfo() {
     return array(
-      'name' => 'Media browser test',
-      'description' => 'Tests the media browser.',
+      'name' => 'Media browser library test',
+      'description' => 'Tests the media browser library tab.',
       'group' => 'Media',
     );
   }
 
+  function setUp() {
+    parent::setUp();
+    $this->base_user_1 = $this->drupalCreateUser(array('create files', 'administer files'));
+    $this->base_user_2 = $this->drupalCreateUser(array('create files', 'administer files', 'view own private files'));
+    $this->base_user_3 = $this->drupalCreateUser(array('create files', 'administer files', 'view private files'));
+  }
+
   /**
-   * Tests the media element type settings.
+   * Tests that the views sorting works on the media browser 'Library' tab.
    */
-  function testElementSettings() {
+  function testFilesBrowserSort() {
+    // Load only the 'Library' tab of the media browser.
+    $options = array(
+      'query' => array(
+        'enabledPlugins' => array(
+          'media_default--media_browser_1' => 'media_default--media_browser_1',
+        ),
+      ),
+    );
+
+    $i = 0;
+    foreach (array('dd', 'aa', 'DD', 'bb', 'cc', 'CC', 'AA', 'BB') as $prefix) {
+      $this->createFileEntity(array('filepath' => $prefix . $this->randomName(6), 'timestamp' => $i));
+      $i++;
+    }
+
+    // Test that the default sort by file_managed.timestamp DESC actually fires properly.
+    $files_query = db_select('file_managed', 'fm')
+      ->fields('fm', array('fid'))
+      ->orderBy('timestamp', 'DESC')
+      ->execute()
+      ->fetchCol();
+
+    $files_form = array();
+    $this->drupalGet('media/browser', $options);
+    foreach ($this->xpath('//ul[@class="media-list-thumbnails"]/li/div[@data-fid]/@data-fid') as $input) {
+      $files_form[] = $input;
+    }
+    $this->assertEqual($files_query, $files_form, 'Files are sorted in the form according to the default query.');
+  }
+
+  /**
+   * Tests media browser 'Library' tab with different user permissions.
+   */
+  function testFilesBrowserLibrary() {
+    // Load only the 'Library' tab of the media browser.
+    $options = array(
+      'query' => array(
+        'enabledPlugins' => array(
+          'media_default--media_browser_1' => 'media_default--media_browser_1',
+        ),
+      ),
+    );
+
+    $files['public_image'] = $this->createFileEntity(array('scheme' => 'public', 'uid' => $this->base_user_1->uid, 'type' => 'image'));
+    $files['public_document'] = $this->createFileEntity(array('scheme' => 'public', 'uid' => $this->base_user_2->uid, 'type' => 'document'));
+    $files['private_image'] = $this->createFileEntity(array('scheme' => 'private', 'uid' => $this->base_user_1->uid, 'type' => 'image'));
+    $files['private_document'] = $this->createFileEntity(array('scheme' => 'private', 'uid' => $this->base_user_2->uid, 'type' => 'document'));
+
+    // Verify all files are displayed for administrators.
+    $this->drupalGet('media/browser', $options);
+    $this->assertResponse(200);
+    foreach ($files as $file) {
+      $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+        ':fid' => $file->fid,
+      ));
+      $this->assertFieldByXPath($xpath, TRUE, format_string('File with file ID %fid found.', array('%fid' => $file->fid)));
+    }
+
+    // Verify public files are displayed.
+    $this->drupalLogout();
+    $this->drupalLogin($this->base_user_1);
+    $this->drupalGet('media/browser', $options);
+    $this->assertResponse(200);
+    $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+      ':fid' => $files['public_image']->fid,
+    ));
+    $this->assertFieldByXPath($xpath, TRUE, format_string('File with file ID %fid found.', array('%fid' => $files['public_image']->fid)));
+    $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+      ':fid' => $files['public_document']->fid,
+    ));
+    $this->assertFieldByXPath($xpath, TRUE, format_string('File with file ID %fid found.', array('%fid' => $files['public_document']->fid)));
+
+    // Verify private file is displayed with permission.
+    $this->drupalLogout();
+    $this->drupalLogin($this->base_user_2);
+    $this->drupalGet('media/browser', $options);
+    $this->assertResponse(200);
+    $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+      ':fid' => $files['private_document']->fid,
+    ));
+    $this->assertFieldByXPath($xpath, TRUE, format_string('File with file ID %fid found.', array('%fid' => $files['private_document']->fid)));
+
+    // Verify user cannot see private file of other users.
+    $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+      ':fid' => $files['private_image']->fid,
+    ));
+    $this->assertNoFieldByXPath($xpath, TRUE, format_string('File with file ID %fid not found.', array('%fid' => $files['private_image']->fid)));
+
+    // Verify private file is displayed with permission.
+    $this->drupalLogout();
+    $this->drupalLogin($this->base_user_3);
+    $this->drupalGet('media/browser', $options);
+    $this->assertResponse(200);
+
+    // Verify user can see private file of other users.
+    $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+      ':fid' => $files['private_document']->fid,
+    ));
+    $this->assertFieldByXPath($xpath, TRUE, format_string('File with file ID %fid found.', array('%fid' => $files['private_document']->fid)));
+    $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+      ':fid' => $files['private_image']->fid,
+    ));
+    $this->assertFieldByXPath($xpath, TRUE, format_string('File with file ID %fid found.', array('%fid' => $files['private_image']->fid)));
+
+    // Verify file access can be bypassed.
+    $this->drupalLogout();
+    $this->drupalLogin($this->admin_user);
+    $this->drupalGet('media/browser', $options);
+    $this->assertResponse(200);
+    foreach ($files as $file) {
+      $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+        ':fid' => $file->fid,
+      ));
+      $this->assertFieldByXPath($xpath, TRUE, format_string('File with file ID %fid found.', array('%fid' => $file->fid)));
+    }
+  }
+}
+
+/**
+ * Tests the media browser 'My files' tab.
+ */
+class MediaBrowserMyFilesTestCase extends MediaFileFieldTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Media browser my files test',
+      'description' => 'Tests the media browser my files tab.',
+      'group' => 'Media',
+    );
+  }
+
+  function setUp() {
+    parent::setUp();
+    $this->base_user_1 = $this->drupalCreateUser(array('create files', 'administer files'));
+    $this->base_user_2 = $this->drupalCreateUser(array('create files', 'administer files', 'view own files'));
+    $this->base_user_3 = $this->drupalCreateUser(array('create files', 'administer files', 'view own files', 'view own private files'));
+  }
+
+  /**
+   * Tests media browser 'My files' tab with different user permissions.
+   */
+  function testFilesBrowserMyFiles() {
+    // Load only the 'My files' tab of the media browser.
+    $options = array(
+      'query' => array(
+        'enabledPlugins' => array(
+          'media_default--media_browser_my_files' => 'media_default--media_browser_my_files',
+        ),
+      ),
+    );
+
+    $files['public_image'] = $this->createFileEntity(array('scheme' => 'public', 'uid' => $this->base_user_2->uid, 'type' => 'image'));
+    $files['public_document'] = $this->createFileEntity(array('scheme' => 'public', 'uid' => $this->base_user_3->uid, 'type' => 'document'));
+    $files['private_image'] = $this->createFileEntity(array('scheme' => 'private', 'uid' => $this->base_user_2->uid, 'type' => 'image'));
+    $files['private_document'] = $this->createFileEntity(array('scheme' => 'private', 'uid' => $this->base_user_3->uid, 'type' => 'document'));
+
+    // Verify administrators do not have any special access to files.
+    $this->drupalGet('media/browser', $options);
+    $this->assertResponse(200);
+    foreach ($files as $file) {
+      $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+        ':fid' => $file->fid,
+      ));
+      $this->assertNoFieldByXPath($xpath, TRUE, format_string('File with file ID %fid not found.', array('%fid' => $file->fid)));
+    }
+
+    // Verify users require the 'view own files' permission in order to access
+    // the 'My files' tab.
+    $this->drupalLogout();
+    $this->drupalLogin($this->base_user_1);
+    $this->drupalGet('media/browser', $options);
+    $this->assertResponse(200);
+    $xpath = $this->buildXPathQuery('//div[@class="media_default--media_browser_my_files"]');
+    $this->assertNoFieldByXPath($xpath, TRUE, 'User with insufficient permissions was unable to view the My files tab.');
+
+    // Verify own public files are displayed.
+    $this->drupalLogout();
+    $this->drupalLogin($this->base_user_2);
+    $this->drupalGet('media/browser', $options);
+    $this->assertResponse(200);
+    $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+      ':fid' => $files['public_image']->fid,
+    ));
+    $this->assertFieldByXPath($xpath, TRUE, format_string('File with file ID %fid found.', array('%fid' => $files['public_image']->fid)));
+
+    // Verify own private file is displayed with permission.
+    $this->drupalLogout();
+    $this->drupalLogin($this->base_user_3);
+    $this->drupalGet('media/browser', $options);
+    $this->assertResponse(200);
+    $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+      ':fid' => $files['private_document']->fid,
+    ));
+    $this->assertFieldByXPath($xpath, TRUE, format_string('File with file ID %fid found.', array('%fid' => $files['private_document']->fid)));
+
+    // Verify user cannot see files of other users.
+    $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+      ':fid' => $files['public_image']->fid,
+    ));
+    $this->assertNoFieldByXPath($xpath, TRUE, format_string('File with file ID %fid not found.', array('%fid' => $files['public_image']->fid)));
+    $xpath = $this->buildXPathQuery('//ul[@class="media-list-thumbnails"]/li/div[@data-fid=:fid]/@data-fid', array(
+      ':fid' => $files['private_image']->fid,
+    ));
+    $this->assertNoFieldByXPath($xpath, TRUE, format_string('File with file ID %fid not found.', array('%fid' => $files['private_image']->fid)));
   }
 }
 
