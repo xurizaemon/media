@@ -597,6 +597,7 @@ function media_element_info() {
     '#pre_render' => array('media_element_pre_render'),
     '#theme' => 'media_element',
     '#theme_wrappers' => array('form_element'),
+    '#size' => 22,
     '#extended' => FALSE,
     '#media_options' => array(
       'global' => array(
@@ -650,7 +651,7 @@ function media_element_process($element, &$form_state, $form) {
     '#limit_validation_errors' => array($element['#parents']),
     '#ajax' => $ajax_settings,
     '#attributes' => array('class' => array('attach')),
-    '#weight' => -5,
+    '#weight' => -1,
   );
 
   $element['preview'] = array(
@@ -667,13 +668,26 @@ function media_element_process($element, &$form_state, $form) {
     $element['preview']['content'] = media_get_thumbnail_preview($element['#file']);
   }
 
+  // The file ID field itself.
+  $element['upload'] = array(
+    '#name' => 'media[' . implode('_', $element['#parents']) . ']',
+    '#type' => 'textfield',
+    '#title' => t('Enter the ID of an existing file'),
+    '#title_display' => 'invisible',
+    '#field_prefix' => t('File ID'),
+    '#size' => $element['#size'],
+    '#theme_wrappers' => array(),
+    '#attributes' => array('class' => array('upload')),
+    '#weight' => -9,
+  );
+
   $element['browse_button'] = array(
     '#type' => 'link',
     '#href' => '',
     '#title' => t('Browse'),
-    '#attributes' => array('class' => array('button', 'browse')),
+    '#attributes' => array('class' => array('button', 'browse', 'element-hidden')),
     '#options' => array('fragment' => FALSE, 'external' => TRUE),
-    '#weight' => -9,
+    '#weight' => -8,
   );
 
   // Force the progress indicator for the remove button to be either 'none' or
@@ -690,7 +704,7 @@ function media_element_process($element, &$form_state, $form) {
     '#limit_validation_errors' => array($element['#parents']),
     '#ajax' => $ajax_settings,
     '#attributes' => array('class' => array('remove')),
-    '#weight' => -3,
+    '#weight' => 0,
     '#access' => $element['#file'] ? file_entity_access('delete', $element['#file']) : TRUE, // only do perm check for existing files
   );
 
@@ -740,22 +754,28 @@ function media_file_value(&$element, $input = FALSE, $form_state = NULL) {
     $fid = $form_state_fid;
   }
 
-  // Process any input and save new uploads.
+  // Process any input and attach files.
   if ($input !== FALSE) {
     $return = $input;
 
-    // Check for #filefield_value_callback values.
-    // Because FAPI does not allow multiple #value_callback values like it
-    // does for #element_validate and #process, this fills the missing
-    // functionality to allow File fields to be extended through FAPI.
-    if (isset($element['#file_value_callbacks'])) {
-      foreach ($element['#file_value_callbacks'] as $callback) {
-        $callback($element, $input, $form_state);
-      }
-    }
-    // Load file if the FID has changed to confirm it exists.
-    if (isset($input['fid']) && $file = file_load($input['fid'])) {
+    // Attachments take priority over all other values.
+    if ($file = media_attach_file($element)) {
       $fid = $file->fid;
+    }
+    else {
+      // Check for #filefield_value_callback values.
+      // Because FAPI does not allow multiple #value_callback values like it
+      // does for #element_validate and #process, this fills the missing
+      // functionality to allow File fields to be extended through FAPI.
+      if (isset($element['#file_value_callbacks'])) {
+        foreach ($element['#file_value_callbacks'] as $callback) {
+          $callback($element, $input, $form_state);
+        }
+      }
+      // Load file if the FID has changed to confirm it exists.
+      if (isset($input['fid']) && $file = file_load($input['fid'])) {
+        $fid = $file->fid;
+      }
     }
   }
 
@@ -779,6 +799,31 @@ function media_file_value(&$element, $input = FALSE, $form_state = NULL) {
   $return['fid'] = $fid;
 
   return $return;
+}
+
+/**
+ * Attaches any files that have been referenced by a media element.
+ *
+ * @param $element
+ *   The FAPI element whose files are being attached.
+ *
+ * @return
+ *   The file object representing the file that was attached, or FALSE if no
+ *   file was attached.
+ */
+function media_attach_file($element) {
+  $upload_name = implode('_', $element['#parents']);
+  if (empty($_POST['media'][$upload_name])) {
+    return FALSE;
+  }
+
+  if (!$file = file_load($_POST['media'][$upload_name])) {
+    watchdog('file', 'The file upload failed. %upload', array('%upload' => $upload_name));
+    form_set_error($upload_name, t('The file in the !name field was unable to be uploaded.', array('!name' => $element['#title'])));
+    return FALSE;
+  }
+
+  return $file;
 }
 
 /**
