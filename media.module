@@ -1146,11 +1146,9 @@ function media_form_file_entity_admin_file_alter(&$form, $form_state) {
   // selected and they try to switch between the "Thumbnail" and "List" local
   // tasks.
   $path = drupal_get_path('module', 'media');
-  require_once $path . '/includes/media.browser.inc';
   $form['#attributes']['class'][] = 'file-entity-admin-file-form';
   $form['#attached']['js'][] = $path . '/js/media.admin.js';
   $form['#attached']['css'][] = $path . '/css/media.css';
-  media_attach_browser_js($form);
 
   // By default, this form contains a table select element called "files". For
   // the 'thumbnails' tab, Media generates a thumbnail for each file and
