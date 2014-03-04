@@ -423,7 +423,6 @@ function theme_media_widget_multiple($variables) {
     );
   }
   $headers[] = t('Weight');
-  $headers[] = t('Operations');
 
   // Get our list of widgets in order (needed when the form comes back after
   // preview or failed validation).
@@ -486,7 +485,13 @@ function theme_media_widget_multiple($variables) {
       $row[] = $display;
     }
     $row[] = $weight;
-    $row[] = $operations;
+
+    // Only show the operations column if the user has operations to perform.
+    if (!empty($operations)) {
+      $headers[] = t('Operations');
+      $row[] = $operations;
+    }
+
     $rows[] = array(
       'data' => $row,
       'class' => isset($widget['#attributes']['class']) ? array_merge($widget['#attributes']['class'], array('draggable')) : array('draggable'),
