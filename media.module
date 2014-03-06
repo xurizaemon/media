@@ -114,8 +114,7 @@ function media_menu() {
     'title' => 'Media browser',
     'description' => 'Media Browser for picking media and uploading new media',
     'page callback' => 'media_browser',
-    'access callback' => 'file_entity_access',
-    'access arguments' => array('create'),
+    'access arguments' => array('access media browser'),
     'type' => MENU_CALLBACK,
     'file' => 'includes/media.browser.inc',
     'theme callback' => 'media_dialog_get_theme_name',
@@ -177,6 +176,9 @@ function media_permission() {
     'administer media browser' => array(
       'title' => t('Administer media browser'),
       'description' => t('Access media browser settings.'),
+    ),
+    'access media browser' => array(
+      'title' => t('Use the media browser'),
     ),
   );
 }

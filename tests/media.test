@@ -22,7 +22,7 @@ class MediaFileFieldTestCase extends DrupalWebTestCase {
     $modules[] = 'media';
     $modules[] = 'media_module_test';
     parent::setUp($modules);
-    $this->admin_user = $this->drupalCreateUser(array('access content', 'view files', 'view own files', 'access administration pages', 'administer site configuration', 'administer users', 'administer permissions', 'administer content types', 'administer nodes', 'administer files', 'bypass node access', 'bypass file access'));
+    $this->admin_user = $this->drupalCreateUser(array('access content', 'view files', 'view own files', 'access media browser', 'access administration pages', 'administer site configuration', 'administer users', 'administer permissions', 'administer content types', 'administer nodes', 'administer files', 'bypass node access', 'bypass file access'));
     $this->drupalLogin($this->admin_user);
   }
 
@@ -482,9 +482,9 @@ class MediaBrowserLibraryTestCase extends MediaFileFieldTestCase {
 
   function setUp() {
     parent::setUp();
-    $this->base_user_1 = $this->drupalCreateUser(array('create files', 'administer files'));
-    $this->base_user_2 = $this->drupalCreateUser(array('create files', 'administer files', 'view own private files'));
-    $this->base_user_3 = $this->drupalCreateUser(array('create files', 'administer files', 'view private files'));
+    $this->base_user_1 = $this->drupalCreateUser(array('access media browser', 'create files', 'administer files'));
+    $this->base_user_2 = $this->drupalCreateUser(array('access media browser', 'create files', 'administer files', 'view own private files'));
+    $this->base_user_3 = $this->drupalCreateUser(array('access media browser', 'create files', 'administer files', 'view private files'));
   }
 
   /**
@@ -623,9 +623,9 @@ class MediaBrowserMyFilesTestCase extends MediaFileFieldTestCase {
 
   function setUp() {
     parent::setUp();
-    $this->base_user_1 = $this->drupalCreateUser(array('create files', 'administer files'));
-    $this->base_user_2 = $this->drupalCreateUser(array('create files', 'administer files', 'view own files'));
-    $this->base_user_3 = $this->drupalCreateUser(array('create files', 'administer files', 'view own files', 'view own private files'));
+    $this->base_user_1 = $this->drupalCreateUser(array('access media browser', 'create files', 'administer files'));
+    $this->base_user_2 = $this->drupalCreateUser(array('access media browser', 'create files', 'administer files', 'view own files'));
+    $this->base_user_3 = $this->drupalCreateUser(array('access media browser', 'create files', 'administer files', 'view own files', 'view own private files'));
   }
 
   /**

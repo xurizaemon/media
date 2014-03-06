@@ -1164,3 +1164,16 @@ function media_update_7225() {
     }
   }
 }
+
+/**
+ * Accommodate the introduction of a new permission which restricts access to
+ * the media browser by granting it to existing users who were able to access
+ * it.
+ */
+function media_update_7226() {
+  $roles = user_roles(FALSE, 'create files');
+
+  foreach ($roles as $rid => $role) {
+    user_role_grant_permissions($rid, array('access media browser'));
+  }
+}
