@@ -82,10 +82,6 @@ Drupal.media.openBrowser = function (event) {
     uploadField.val(mediaFile.fid);
     uploadField.trigger('change');
 
-    // Find the attach button and automatically trigger it.
-    var attachButton = uploadField.siblings('.attach');
-    attachButton.trigger('mousedown');
-
     // Display a preview of the file using the selected media file's display.
     previewField.html(mediaFile.preview);
   }, configuration);
