@@ -1212,6 +1212,30 @@ function media_get_browser_plugin_info() {
 }
 
 /**
+ * Gets the MIME type mapped to a given extension.
+ *
+ * @param string $extension
+ *   A file extension.
+ *
+ * @return string
+ *   The MIME type associated with the extension or FALSE if the extension does
+ *   not have an associated MIME type.
+ *
+ * @see file_mimetype_mapping()
+ */
+function media_get_extension_mimetype($extension) {
+  include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
+  $mimetype_mappings = file_mimetype_mapping();
+
+  if ($id = $mimetype_mappings['extensions'][$extension]) {
+    return $mimetype_mappings['mimetypes'][$id];
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
  * Helper function to get a list of local stream wrappers.
  */
 function media_get_local_stream_wrappers() {
