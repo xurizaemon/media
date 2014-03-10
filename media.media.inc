@@ -40,7 +40,7 @@ function media_media_browser_plugin_info() {
 }
 
 /**
- * Implements hook_query_media_browser_alter().
+ * Implements hook_query_TAG_alter().
  *
  * @todo: Potentially move this into media.module in a future version of Media.
  */
