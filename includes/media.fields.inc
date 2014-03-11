@@ -108,9 +108,9 @@ function media_field_widget_form(&$form, &$form_state, $field, $instance, $langc
     '#process' => array_merge($element_info['#process'], array('media_field_widget_process')),
     '#media_options' => array(
       'global' => array(
-        'types' => $widget_settings['allowed_types'],
-        'enabledPlugins' => $instance['widget']['settings']['browser_plugins'],
-        'schemes' => $widget_settings['allowed_schemes'],
+        'types' => array_filter($widget_settings['allowed_types']),
+        'enabledPlugins' => array_filter($instance['widget']['settings']['browser_plugins']),
+        'schemes' => array_filter($widget_settings['allowed_schemes']),
         'file_directory' => isset($field_settings['file_directory']) ? $field_settings['file_directory'] : '',
         'file_extensions' => isset($field_settings['file_extensions']) ? $field_settings['file_extensions'] : variable_get('file_entity_default_allowed_extensions', 'jpg jpeg gif png txt doc docx xls xlsx pdf ppt pptx pps ppsx odt ods odp mp3 mov mp4 m4a m4v mpeg avi ogg oga ogv weba webp webm'),
         'max_filesize' => isset($field_settings['max_filesize']) ? $field_settings['max_filesize'] : 0,
