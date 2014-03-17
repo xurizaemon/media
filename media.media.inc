@@ -85,10 +85,14 @@ function media_query_media_browser_alter($query) {
         $mimetypes = array();
         foreach ($extensions as $extension) {
           $mimetype = media_get_extension_mimetype($extension);
-          $mimetypes[] = $mimetype;
+          if ($mimetype) {
+            $mimetypes[] = $mimetype;
+          }
         }
         $local_and->condition($alias . '.uri', db_like($scheme . '://') . '%', 'LIKE');
-        $local_and->condition($alias . '.filemime', $mimetypes, 'IN');
+        if (count($mimetypes)) {
+          $local_and->condition($alias . '.filemime', $mimetypes, 'IN');
+        }
       }
       else {
         $local_or->condition($alias . '.uri', db_like($scheme . '://') . '%', 'LIKE');

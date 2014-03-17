@@ -1227,7 +1227,8 @@ function media_get_extension_mimetype($extension) {
   include_once DRUPAL_ROOT . '/includes/file.mimetypes.inc';
   $mimetype_mappings = file_mimetype_mapping();
 
-  if ($id = $mimetype_mappings['extensions'][$extension]) {
+  if (isset($mimetype_mappings['extensions'][$extension])) {
+    $id = $mimetype_mappings['extensions'][$extension];
     return $mimetype_mappings['mimetypes'][$id];
   }
   else {
