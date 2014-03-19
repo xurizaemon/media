@@ -200,6 +200,9 @@ function media_theme() {
     'media_widget_multiple' => array(
       'render element' => 'element',
     ),
+    'media_upload_help' => array(
+      'variables' => array('description' => NULL),
+    ),
 
     // media.theme.inc.
     'media_thumbnail' => array(
