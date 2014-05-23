@@ -9,36 +9,6 @@
  * Implements hook_install().
  */
 function media_install() {
-  // Create initial display settings.
-  module_load_include('inc', 'file_entity', 'file_entity.file_api');
-  $default_image_styles = array(
-    'preview' => 'media_thumbnail',
-    'teaser' => 'medium',
-    'full' => 'large',
-  );
-  // Only needed by sites that updated from Media 1.x.
-  // @see media_entity_info_alter()
-  if (variable_get('media_show_deprecated_view_modes')) {
-    $default_image_styles['media_original'] = '';
-  }
-
-  foreach ($default_image_styles as $view_mode => $image_style) {
-    $existing_display = file_displays_load('image', $view_mode);
-
-    if (empty($existing_display)) {
-      $display_name = 'image__' . $view_mode . '__file_image';
-      $display = array(
-        'api_version' => 1,
-        'name' => $display_name,
-        'status' => 1,
-        'weight' => 5,
-        'settings' => array('image_style' => $image_style),
-        'export_type' => NULL,
-      );
-      file_display_save((object) $display);
-    }
-  }
-
   // Make sure that we set the icon base directory variable if it is not
   // already set.
   $base = variable_get('media_icon_base_directory', NULL);
