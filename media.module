@@ -701,7 +701,6 @@ function media_element_process($element, &$form_state, $form) {
     '#ajax' => $ajax_settings,
     '#attributes' => array('class' => array('remove')),
     '#weight' => 0,
-    '#access' => $element['#file'] ? file_entity_access('delete', $element['#file']) : TRUE, // only do perm check for existing files
   );
 
   $element['fid'] = array(
