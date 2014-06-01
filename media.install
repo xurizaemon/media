@@ -48,6 +48,7 @@ function _media_install_copy_icons() {
  */
 function media_uninstall() {
   // Remove variables.
+  variable_del('media_dialog_theme');
   variable_del('media_icon_base_directory');
   variable_del('media_icon_set');
   variable_del('media_show_deprecated_view_modes');
