@@ -7,7 +7,6 @@ dependencies[] = file_entity
 dependencies[] = image
 dependencies[] = views
 
-test_dependencies[] = file_entity (7.x-2.x-dev)
 test_dependencies[] = token
 
 files[] = includes/MediaReadOnlyStreamWrapper.inc
