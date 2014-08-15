@@ -49,6 +49,7 @@ class MediaInternetBrowserWebTabTestCase extends MediaInternetTestHelper {
       'name' => 'Media browser web tab test',
       'description' => 'Tests the media browser web tab.',
       'group' => 'Media Internet',
+      'dependencies' => array('fake'), // @todo remove when File Entity > alpha3 is released. This test currently fails on drupal.org due to testbot dependency issues.
     );
   }
 
