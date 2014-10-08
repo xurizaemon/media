@@ -393,8 +393,13 @@ function media_form_alter(&$form, &$form_state, $form_id) {
   // If we're in the media browser, set the #media_browser key to true
   // so that if an ajax request gets sent to a different path, the form
   // still uses the media_browser_form_submit callback.
-  if (current_path() == 'media/browser' && $form_id != 'views_exposed_form') {
-    $form_state['#media_browser'] = TRUE;
+  if (current_path() == 'media/browser') {
+    if ($form_id == 'views_exposed_form') {
+      $form['render'] = array('#type' => 'hidden', '#value' => 'media-popup');
+      $form['#action'] = '/media/browser';
+    } else {
+      $form_state['#media_browser'] = TRUE;
+    }
   }
 
   // If the #media_browser key isset and is true we are using the browser
