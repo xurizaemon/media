@@ -71,7 +71,7 @@
 
       // Wrap the content to be able to use replaceWith() and html().
       content = $('<div>').append(content);
-      var media = $('.media-element', content);
+      var media = $('[data-media-element]', content);
 
       if (media.length) {
         // Replace all media elements with their respective macros.
@@ -139,9 +139,10 @@
       // Store the fid in the DOM to retrieve the data from the info map.
       element.attr('data-fid', info.fid);
 
-      // Add media-element class so we can find markup element later.
-      var classes = ['media-element'];
+      // Add data-media-element attribute so we can find the markup element later.
+      element.attr('data-media-element', '1')
 
+      var classes = ['media-element'];
       if (info.view_mode) {
         classes.push('file-' + info.view_mode.replace(/_/g, '-'));
       }
