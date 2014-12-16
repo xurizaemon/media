@@ -12,6 +12,13 @@ function media_internet_hook_info() {
 }
 
 /**
+ * Access callback for the media_internet media browser plugin.
+ */
+function media_internet_access($account = NULL) {
+  return user_access('administer media', $account) || user_access('add media from remote sources', $account);
+}
+
+/**
  * Implement hook_permission().
  */
 function media_internet_permission() {
