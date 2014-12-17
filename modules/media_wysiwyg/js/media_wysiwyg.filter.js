@@ -170,6 +170,10 @@
     create_macro: function (element) {
       var file_info = Drupal.media.filter.extract_file_info(element);
       if (file_info) {
+        if (typeof file_info.link_text == 'string') {
+          // Make sure the link_text-html-tags are properly escaped.
+          file_info.link_text = file_info.link_text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
         return '[[' + JSON.stringify(file_info) + ']]';
       }
       return false;
