@@ -46,6 +46,7 @@
             var source = Drupal.settings.mediaSourceMap[media_definition.fid];
             media = document.createElement(source.tagName);
             media.src = source.src;
+            media.innerHTML = source.innerHTML;
           }
 
           // Apply attributes.
@@ -129,7 +130,8 @@
         Drupal.media.filter.ensureSourceMap();
         Drupal.settings.mediaSourceMap[info.fid] = {
           tagName: element[0].tagName,
-          src: element[0].src
+          src: element[0].src,
+          innerHTML: element[0].innerHTML
         }
       }
 
@@ -150,6 +152,11 @@
         classes.push('file-' + info.view_mode.replace(/_/g, '-'));
       }
       element.addClass(classes.join(' '));
+
+      // Apply link_text if present.
+      if (info.link_text) {
+        $('a', element).html(info.link_text);
+      }
 
       return element;
     },
