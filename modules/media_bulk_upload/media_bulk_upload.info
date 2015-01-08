@@ -7,4 +7,7 @@ dependencies[] = media
 dependencies[] = multiform
 dependencies[] = plupload
 
+test_dependencies[] = multiform
+test_dependencies[] = plupload
+
 files[] = includes/MediaBrowserBulkUpload.inc
