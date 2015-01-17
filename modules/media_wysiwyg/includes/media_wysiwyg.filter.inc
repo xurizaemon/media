@@ -254,37 +254,6 @@ function media_wysiwyg_filter_field_parser($tag_info) {
 }
 
 /**
- * Builds a map of media tags in the element.
- *
- * Builds a map of the media tags in an element that are being rendered to their
- * rendered HTML. The map is stored in JS, so we can transform them when the
- * editor is being displayed.
- */
-function media_wysiwyg_pre_render_text_format($element) {
-  // filter_process_format() copies properties to the expanded 'value' child
-  // element.
-  if (!isset($element['format'])) {
-    return $element;
-  }
-
-  $field = &$element['value'];
-  $settings = array(
-    'field' => $field['#id'],
-  );
-
-  if (!isset($field['#value'])) {
-    return $element;
-  }
-
-  $tagmap = _media_wysiwyg_generate_tagMap($field['#value']);
-
-  if (isset($tagmap)) {
-    drupal_add_js(array('tagmap' => $tagmap), 'setting');
-  }
-  return $element;
-}
-
-/**
  * Creates map of inline media tags.
  *
  * Generates an array of [inline tags] => <html> to be used in filter
