@@ -709,7 +709,7 @@ function media_element_process($element, &$form_state, $form) {
   ctools_modal_add_js();
 
   // Append the '-upload' to the #id so the field label's 'for' attribute
-  // corresponds with the file element.
+  // corresponds with the textfield element.
   $original_id = $element['#id'];
   $element['#id'] .= '-upload';
   $fid = isset($element['#value']['fid']) ? $element['#value']['fid'] : 0;
