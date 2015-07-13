@@ -104,7 +104,7 @@ function media_update_dependencies() {
 function media_requirements($phase) {
   $t = get_t();
   // Make sure that file_entity module is 2.x version.
-  // We can't add this check in .info file because drupal.org testbot cant
+  // We can't add this check in .info file because drupal.org testbot can't
   // handle it. See #1734648.
   $requirements = array();
 
