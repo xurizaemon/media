@@ -46,8 +46,8 @@ Drupal.media.formatForm.getOptions = function () {
         // Retrieve the content from the WYSIWYG instance.
         ret[field.name] = Drupal.wysiwyg.instances[field.key].getContent();
 
-        // Escape the double-quotes and encode it to play nicely within JSON.
-        ret[field.name] = encodeURIComponent(ret[field.name].replace(/"/g, '\\"'));
+        // Encode the content to play nicely within JSON.
+        ret[field.name] = encodeURIComponent(ret[field.name]);
       }
     }
   });
