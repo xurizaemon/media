@@ -18,12 +18,11 @@ function media_wysiwyg_format_form($form, &$form_state, $file) {
   $query_fields = isset($_GET['fields']) ? drupal_json_decode($_GET['fields']) : array();
   $fields = media_wysiwyg_filter_field_parser(array('fields' => $query_fields), $file);
 
-  $view_modes = media_wysiwyg_get_wysiwyg_allowed_view_modes($file);
-  $formats = $options = array();
-  foreach ($view_modes as $view_mode => $view_mode_info) {
+  $options = media_wysiwyg_get_file_view_mode_options($file);
+  $formats = array();
+  foreach ($options as $view_mode => $view_mode_label) {
     // @TODO: Display more verbose information about which formatter and what it
     // does.
-    $options[$view_mode] = $view_mode_info['label'];
     $element = media_wysiwyg_get_file_without_label($file, $view_mode, array('wysiwyg' => TRUE));
 
     // Make a pretty name out of this.
