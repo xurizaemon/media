@@ -24,7 +24,8 @@ function media_browser($selected = NULL) {
     }
     $files = file_load_multiple($fids);
     foreach ($files as $file) {
-      media_browser_build_media_item($file);
+      $view_mode = isset($params['view_mode']) ? $params['view_mode'] : 'preview';
+      media_browser_build_media_item($file, $view_mode);
     }
     $setting = array('media' => array('selectedMedia' => array_values($files)));
     drupal_add_js($setting, 'setting');
@@ -149,41 +150,11 @@ function media_browser($selected = NULL) {
 }
 
 /**
- * Attaches media browser javascript to an element.
- *
- * @param array $element
- *   The element array to attach to.
- */
-function media_attach_browser_js(&$element) {
-  static $js_attached = FALSE;
-  if (!$js_attached) {
-    $javascript = media_browser_js();
-    foreach ($javascript as $key => $definitions) {
-      foreach ($definitions as $definition) {
-        $element['#attached'][$key][] = $definition;
-      }
-    }
-    $js_attached = TRUE;
-  }
-}
-
-/**
- * Helper function to define browser javascript.
- */
-function media_browser_js() {
-  return array(
-    'library' => array(
-      array('media', 'media_browser'),
-      array('media', 'media_browser_settings'),
-    ),
-  );
-}
-
-/**
  * Menu callback for testing the media browser.
  */
 function media_browser_testbed($form) {
-  media_attach_browser_js($form);
+  $form['#attached']['library'][] = array('media', 'media_browser');
+  $form['#attached']['library'][] = array('media', 'media_browser_settings');
 
   $form['test_element'] = array(
     '#type' => 'media',
@@ -261,12 +232,13 @@ EOF;
 }
 
 /**
- * Adds properties to the file.
+ * Adds additional properties to a file which are needed by the browser JS code.
  *
- * Additional properties on this file are needed by the media browser JS code.
+ * @param object $file
+ *   A Drupal file object.
  */
-function media_browser_build_media_item($file) {
-  $preview = media_get_thumbnail_preview($file);
+function media_browser_build_media_item($file, $view_mode = 'preview') {
+  $preview = media_get_thumbnail_preview($file, NULL, $view_mode);
   $file->preview = drupal_render($preview);
   $file->url = file_create_url($file->uri);
 }
