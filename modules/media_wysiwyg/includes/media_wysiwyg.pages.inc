@@ -45,7 +45,7 @@ function media_wysiwyg_format_form($form, &$form_state, $file) {
 
   // Add the previews by reference so that they can easily be altered by
   // changing $form['#formats'].
-  $settings['media']['formatFormFormats'] = &$form_state['storage']['view_mode_output'];
+  $settings['media']['formatFormFormats'] = &$form_state['storage']['view_mode_previews'];
   $form['#attached']['js'][] = array('data' => $settings, 'type' => 'setting');
 
   // Add the required libraries, JavaScript and CSS for the form.
