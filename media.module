@@ -790,7 +790,7 @@ function media_element_process($element, &$form_state, $form) {
     '#attributes' => array(
       'class' => array(
         // Required for CTools modal to work.
-        'ctools-use-modal', 'use-ajax',
+        'ctools-use-modal',
         'ctools-modal-media-file-edit', 'button', 'edit',
       ),
     ),
