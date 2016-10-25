@@ -166,6 +166,11 @@ function media_wysiwyg_token_to_markup($match, $wysiwyg = FALSE, $langcode = NUL
           }
         }
       }
+      foreach (array('title', 'alt') as $field_type) {
+        if (isset($settings['attributes'][$field_type])) {
+          $settings['attributes'][$field_type] = decode_entities($settings['attributes'][$field_type]);
+        }
+      }
     }
   }
   catch (Exception $e) {
@@ -271,7 +276,7 @@ function media_wysiwyg_filter_field_parser($tag_info) {
 
         // The value should be set at the deepest level.
         // Fields that use rich-text markup will be urlencoded.
-        $ref = urldecode($field_value);
+        $ref = decode_entities($field_value);
       }
     }
   }
