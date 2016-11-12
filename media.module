@@ -266,7 +266,13 @@ function media_ajax_upload() {
   // Get the current element and count the number of files.
   $current_element = $form;
   foreach ($form_parents as $parent) {
-    $current_element = $current_element[$parent];
+    if (isset($current_element[$parent])) {
+      $current_element = $current_element[$parent];
+    }
+    else {
+      $current_element = NULL;
+      break;
+    }
   }
   $current_file_count = isset($current_element['#file_upload_delta']) ? $current_element['#file_upload_delta'] : 0;
 
