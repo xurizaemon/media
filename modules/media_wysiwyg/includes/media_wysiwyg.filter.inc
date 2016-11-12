@@ -133,7 +133,7 @@ function media_wysiwyg_token_to_markup($match, $wysiwyg = FALSE, $langcode = NUL
       $tag_info['attributes']['class'] = explode(" ", $tag_info['attributes']['class']);
     }
 
-    // Grab the potentially overrided fields from the file.
+    // Grab the potentially overridden fields from the file.
     $fields = media_wysiwyg_filter_field_parser($tag_info);
     foreach ($fields as $key => $value) {
       $file->{$key} = $value;
@@ -146,7 +146,6 @@ function media_wysiwyg_token_to_markup($match, $wysiwyg = FALSE, $langcode = NUL
 
     if (!empty($tag_info['attributes']) && is_array($tag_info['attributes'])) {
       $settings['attributes'] = array_intersect_key($tag_info['attributes'], array_flip($attribute_whitelist));
-      $settings['fields'] = $fields;
 
       // Many media formatters will want to apply width and height independently
       // of the style attribute or the corresponding HTML attributes, so pull
@@ -170,6 +169,12 @@ function media_wysiwyg_token_to_markup($match, $wysiwyg = FALSE, $langcode = NUL
         if (isset($settings['attributes'][$field_type])) {
           $settings['attributes'][$field_type] = decode_entities($settings['attributes'][$field_type]);
         }
+      }
+    }
+    // Update file metadata from the potentially overridden tag info.
+    foreach (array('width', 'height') as $dimension) {
+      if (isset($settings['attributes'][$dimension])) {
+        $file->metadata[$dimension] = $settings['attributes'][$dimension];
       }
     }
   }
