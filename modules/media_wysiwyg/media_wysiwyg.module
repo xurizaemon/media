@@ -294,6 +294,13 @@ function media_wysiwyg_filter_info() {
     'tips callback' => 'media_filter_tips',
   );
 
+  $filters['media_filter_paragraph_fix'] = array(
+    'title' => t('Ensure that embedded Media tags are not contained in paragraphs'),
+    'description' => t('This filter will strip any paragraph tags surrounding embedded Media tags. This helps to avoid the chopped up markup that can result from unexpectedly closed paragraph tags. This filter should be positioned above (before) the "Convert Media tags to markup" filter.'),
+    'process callback' => 'media_wysiwyg_filter_paragraph_fix',
+    'weight' => 1,
+  );
+
   return $filters;
 }
 
