@@ -28,6 +28,25 @@ function media_wysiwyg_filter($text, $filter = NULL, $format = NULL, $langcode =
 }
 
 /**
+ * Filter callback to remove paragraph tags surrounding embedded media.
+ */
+function media_wysiwyg_filter_paragraph_fix($text) {
+  $html_dom = filter_dom_load($text);
+  foreach ($html_dom->getElementsByTagName('p') as $paragraph) {
+    if (preg_match(MEDIA_WYSIWYG_TOKEN_REGEX, $paragraph->nodeValue)) {
+      $sibling = $paragraph->firstChild;
+      do {
+        $next = $sibling->nextSibling;
+        $paragraph->parentNode->insertBefore($sibling, $paragraph);
+      } while ($sibling = $next);
+      $paragraph->parentNode->removeChild($paragraph);
+    }
+  }
+  $text = filter_dom_serialize($html_dom);
+  return $text;
+}
+
+/**
  * Parses the contents of a CSS declaration block.
  *
  * @param string $declarations
