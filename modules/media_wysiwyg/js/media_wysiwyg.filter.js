@@ -232,7 +232,7 @@
 
       // Parse out link wrappers. They will be re-applied when the image is
       // rendered on the front-end.
-      if (element.is('a')) {
+      if (element.is('a') && element.find('img').length) {
         element = element.children();
       }
 
