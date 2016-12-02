@@ -120,6 +120,19 @@ function media_admin_config_browser($form, &$form_state) {
     '#description' => t('CSS property opacity; used with overlay.'),
   );
 
+  $form['bulk_upload'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Bulk Upload'),
+    '#collapsible' => TRUE,
+    '#collapsed' => TRUE,
+  );
+
+  $form['bulk_upload']['media_bulk_upload_edit'] = array(
+    '#type' => 'checkbox',
+    '#title' => t("Bulk upload edit"),
+    '#description' => t("be re-directed to an edit page after bulk upload on a node edit page"),
+    '#default_value' => variable_get('media_bulk_upload_edit', TRUE),
+  );
   $form['#submit'][] = 'media_admin_config_browser_pre_submit';
 
   return system_settings_form($form);
