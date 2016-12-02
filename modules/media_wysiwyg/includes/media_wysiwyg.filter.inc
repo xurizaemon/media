@@ -295,6 +295,15 @@ function media_wysiwyg_token_to_markup($match, $wysiwyg = FALSE, $langcode = NUL
 function media_wysiwyg_filter_field_parser($tag_info) {
   $fields = array();
   if (isset($tag_info['fields'])) {
+    // Field names that end in [format] are associated with long-text fields that may have HTML Entities.
+    // Those values will need to be URLDecoded as well as HTMLDecoded.
+    $url_encoded_fields = array();
+    foreach($tag_info['fields'] as $field_name => $field_value) {
+      if (preg_match('/\[format\]$/', $field_name) > 0){
+        $url_encoded_fields[] = preg_replace('/\[format\]$/', '[value]', $field_name);
+      }
+    }
+
     foreach($tag_info['fields'] as $field_name => $field_value) {
       if (strpos($field_name, 'field_') === 0) {
         $parsed_field = explode('[', str_replace(']', '', $field_name));
@@ -329,8 +338,14 @@ function media_wysiwyg_filter_field_parser($tag_info) {
         }
 
         // The value should be set at the deepest level.
-        // Fields that use rich-text markup will be urlencoded.
-        $ref = decode_entities($field_value);
+        if (in_array($field_name, $url_encoded_fields)){
+          // Fields that use rich-text markup will be urlencoded.
+          $ref = urldecode(decode_entities($field_value));
+        }
+        else {
+          // Only entities need to be decoded.
+          $ref = decode_entities($field_value);
+        }
       }
     }
   }
