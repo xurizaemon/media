@@ -206,7 +206,7 @@ function media_wysiwyg_token_to_markup($match, $wysiwyg = FALSE, $langcode = NUL
   // the rest of this function, so that if the file is themed as a link, the
   // desired text will be used (see, for example, theme_file_link()).
   // @todo: Try to find a less hacky way to do this.
-  if (isset($tag_info['link_text'])) {
+  if (isset($tag_info['link_text']) && variable_get('media_wysiwyg_use_link_text_for_filename', 1)) {
     // The link text will have characters such as "&" encoded for HTML, but the
     // filename itself needs the raw value when it is used to build the link,
     // in order to avoid double encoding.
@@ -236,7 +236,7 @@ function media_wysiwyg_token_to_markup($match, $wysiwyg = FALSE, $langcode = NUL
       'view_mode' => $tag_info['view_mode'],
       'link_text' => $tag_info['link_text'],
     );
-    drupal_add_js(array('mediaDataMap' => array($file->fid => $data)), 'setting');
+    drupal_add_js(array('mediaDataMap' => array($file->fid => $data), 'mediaDoLinkText' => (boolean)(variable_get('media_wysiwyg_use_link_text_for_filename', 1))), 'setting');
     $element['#attributes']['data-fid'] = $file->fid;
     $element['#attributes']['data-media-element'] = '1';
     $element['#attributes']['class'][] = 'media-element';
