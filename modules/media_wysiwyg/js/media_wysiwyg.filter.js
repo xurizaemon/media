@@ -421,13 +421,20 @@
      * Generates a unique "delta" for each embedding of a particular file.
      */
     fileEmbedDelta: function(fid, element) {
+      // Ensure we have an object to track our deltas.
+      Drupal.settings.mediaDeltas = Drupal.settings.mediaDeltas || {};
+
       // Check to see if the element already has one.
       if (element && element.data('delta')) {
-        return element.data('delta');
+        var existingDelta = element.data('delta');
+        // If so, make sure that it is being tracked in mediaDeltas.
+        if (!Drupal.settings.mediaDeltas[fid]) {
+          Drupal.settings.mediaDeltas[fid] = existingDelta;
+        }
+        return existingDelta;
       }
       // Otherwise, generate a new one. Arbitrarily start with 1.
       var delta = 1;
-      Drupal.settings.mediaDeltas = Drupal.settings.mediaDeltas || {};
       if (Drupal.settings.mediaDeltas[fid]) {
         delta = Drupal.settings.mediaDeltas[fid] + 1;
       }
