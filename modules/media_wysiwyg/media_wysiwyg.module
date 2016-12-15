@@ -552,11 +552,9 @@ function media_wysiwyg_file_displays_alter(&$displays, $file, $view_mode) {
  * Add a file type named 'WYSIWYG'.
  */
 function media_wysiwyg_entity_info_alter(&$entity_info) {
-  $entity_info['file']['view modes'] += array(
-    'wysiwyg' => array(
-      'label' => t('WYSIWYG'),
-      'custom settings' => TRUE,
-    ),
+  $entity_info['file']['view modes']['wysiwyg'] = array(
+    'label' => t('WYSIWYG'),
+    'custom settings' => TRUE,
   );
 }
 
