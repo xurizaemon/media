@@ -39,7 +39,7 @@ Drupal.media.formatForm.getEditorContent = function(fieldKey) {
   // WYSIWYG and Media CKEditor modules: it should be modified to remove that
   // as soon as each module has been confirmed to provide their own implementation.
 
-  if (Drupal.wysiwyg && Drupal.wysiwyg.instances[fieldKey]) {
+  if (Drupal.wysiwyg && Drupal.wysiwyg.instances[fieldKey] && Drupal.wysiwyg.instances[fieldKey].status) {
     // Retrieve the content from the editor provided by the WYSIWYG Module.
     // Remove this case once the WYSIWYG module provides an override for this function.
     return Drupal.wysiwyg.instances[fieldKey].getContent();
