@@ -55,14 +55,6 @@ Drupal.media.formatForm.getEditorContent = function(fieldKey) {
   }
 }
 
-Drupal.media.formatForm.escapeFieldInput = function(input) {
-  // This is the default implementation of an overridable function: It is
-  // intended to allow for the escaping of the user input from the format form.
-  // No escaping is done here, but this allows other modules to escape the input
-  // by overriding this function.
-  return input;
-}
-
 Drupal.media.formatForm.getOptions = function () {
   // Get all the values
   var ret = {};
@@ -82,7 +74,7 @@ Drupal.media.formatForm.getOptions = function () {
       field.name = field.name.replace('[]', '[' + fieldDelta[field.name] + ']');
     }
 
-    ret[field.name] = Drupal.media.formatForm.escapeFieldInput(field.value);
+    ret[field.name] = field.value;
 
     // When a field uses a WYSIWYG format, the value needs to be extracted and encoded.
     if (field.name.match(/\[format\]/i)) {
