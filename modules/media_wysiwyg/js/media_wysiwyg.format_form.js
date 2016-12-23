@@ -91,7 +91,8 @@ Drupal.media.formatForm.getOptions = function () {
 
       // Attempt to retrieve content for this field from any associated javascript rich-text editor.
       var editorContent = Drupal.media.formatForm.getEditorContent(field.key);
-      if (editorContent) {
+      // Find content or an empty string (in case existing content was removed).
+      if (editorContent || editorContent === '') {
         // Replace the already-cached value with the value from the editor.
         ret[field.name] = editorContent;
       }
