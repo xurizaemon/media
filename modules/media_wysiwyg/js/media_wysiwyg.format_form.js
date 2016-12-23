@@ -63,7 +63,7 @@ Drupal.media.formatForm.getOptions = function () {
 
   $.each($('#media-wysiwyg-format-form .fieldset-wrapper *').serializeArray(), function (i, field) {
 
-    // Support multi-value select lists, which show up here with [] at the end.
+    // Support multi-value fields, which show up here with [] at the end.
     if ('[]' == field.name.slice(-2)) {
       if (typeof fieldDelta[field.name] === 'undefined') {
         fieldDelta[field.name] = 0;
