@@ -158,7 +158,12 @@ function media_wysiwyg_token_to_markup($match, $wysiwyg = FALSE, $langcode = NUL
       $file->{$key} = $value;
     }
 
-    $attributes = is_array($tag_info['attributes']) ? $tag_info['attributes'] : array();
+    if (array_key_exists('attributes', $tag_info) && is_array($tag_info['attributes'])) {
+      $attributes = $tag_info['attributes'];
+    }
+    else {
+      $attributes = array();
+    }
     $attribute_whitelist = media_wysiwyg_allowed_attributes();
     $settings['attributes'] = array_intersect_key($attributes, array_flip($attribute_whitelist));
     $settings['fields'] = $fields;
