@@ -3,6 +3,8 @@ description = Adds support for uploading multiple files at a time.
 package = Media
 core = 7.x
 
+configure = admin/config/media/browser
+
 dependencies[] = media
 dependencies[] = multiform (>= 7.x-1.3)
 dependencies[] = plupload
