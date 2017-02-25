@@ -181,8 +181,8 @@
         $(mediaElements).each(function (i) {
           // Attempt to derive a JSON macro representation of the media placeholder.
           // Note: Drupal 7 ships with JQuery 1.4.4, which allows $(this).attr('outerHTML') to retrieve the eement's HTML,
-          // but many sites use JQuery update to increate this to 1.6+, which insists on $(this).prop('outerHTML). 
-          // Until the minimum jQuery is >= 1.6, we need to do this the old-school way. 
+          // but many sites use JQuery update to increate this to 1.6+, which insists on $(this).prop('outerHTML).
+          // Until the minimum jQuery is >= 1.6, we need to do this the old-school way.
           // See http://stackoverflow.com/questions/2419749/get-selected-elements-outer-html
           var markup = $(this).get(0).outerHTML;
           if (markup === undefined) {
@@ -436,23 +436,25 @@
     fileEmbedDelta: function(fid, element) {
       // Ensure we have an object to track our deltas.
       Drupal.settings.mediaDeltas = Drupal.settings.mediaDeltas || {};
+      Drupal.settings.maxMediaDelta = Drupal.settings.maxMediaDelta || 0;
 
       // Check to see if the element already has one.
       if (element && element.data('delta')) {
         var existingDelta = element.data('delta');
-        // If so, make sure that it is being tracked in mediaDeltas.
-        if (!Drupal.settings.mediaDeltas[fid]) {
-          Drupal.settings.mediaDeltas[fid] = existingDelta;
+        // If so, make sure that it is being tracked in mediaDeltas. If we're
+        // going to create new deltas later on, make sure they do not overwrite
+        // other mediaDeltas.
+        if (!Drupal.settings.mediaDeltas[existingDelta]) {
+          Drupal.settings.mediaDeltas[existingDelta] = fid;
+          Drupal.settings.maxMediaDelta = Math.max(Drupal.settings.maxMediaDelta, existingDelta);
         }
         return existingDelta;
       }
-      // Otherwise, generate a new one. Arbitrarily start with 1.
-      var delta = 1;
-      if (Drupal.settings.mediaDeltas[fid]) {
-        delta = Drupal.settings.mediaDeltas[fid] + 1;
-      }
-      Drupal.settings.mediaDeltas[fid] = delta;
-      return delta;
+      // Otherwise, generate a new one.
+      var newDelta = Drupal.settings.maxMediaDelta + 1;
+      Drupal.settings.mediaDeltas[newDelta] = fid;
+      Drupal.settings.maxMediaDelta = newDelta;
+      return newDelta;
     }
   }
 
