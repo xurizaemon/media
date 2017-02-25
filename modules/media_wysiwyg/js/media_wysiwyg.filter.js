@@ -291,6 +291,8 @@
       }
       element.addClass(classes.join(' '));
 
+      // Attempt to override the link_title if the user has chosen to do this.
+      info.link_text = this.overrideLinkTitle(info);
       // Apply link_text if present.
       if (info.link_text) {
         $('a', element).html(info.link_text);
@@ -309,6 +311,7 @@
       var file_info = Drupal.media.filter.extract_file_info(element);
       if (file_info) {
         if (typeof file_info.link_text == 'string') {
+          file_info.link_text = this.overrideLinkTitle(file_info);
           // Make sure the link_text-html-tags are properly escaped.
           file_info.link_text = file_info.link_text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
@@ -428,6 +431,35 @@
     ensure_tagmap: function () {
       Drupal.settings.tagmap = Drupal.settings.tagmap || {};
       return Drupal.settings.tagmap;
+    },
+
+    /**
+     * Return the overridden link title based on the file_entity title field
+     * set.
+     * @param file the file object.
+     * @returns the overridden link_title or the existing link text if no
+     * overridden.
+     */
+    overrideLinkTitle: function(file) {
+      var file_title_field = Drupal.settings.media.img_title_field.replace('field_', '');
+      var file_title_field_machine_name = '';
+      if (typeof(file.fields) != 'undefined') {
+        jQuery.each(file.fields, function(field, fieldValue) {
+          if (field.indexOf(file_title_field) != -1) {
+            file_title_field_machine_name = field;
+          }
+        });
+
+        if (typeof(file.fields[file_title_field_machine_name]) != 'undefined' && file.fields[file_title_field_machine_name] != '') {
+          return file.fields[file_title_field_machine_name];
+        }
+        else {
+          return file.link_text;
+        }
+      }
+      else {
+        return file.link_text;
+      }
     },
 
     /**
