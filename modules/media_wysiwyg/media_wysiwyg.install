@@ -179,7 +179,7 @@ function media_wysiwyg_update_7205() {
   $types = file_type_load_all(TRUE);
   foreach ($types as $type) {
     $enabled = variable_get('media_wysiwyg_view_mode_audio_wysiwyg_restricted_view_modes_status', FALSE);
-    if ($status) {
+    if ($enabled) {
       $wysiwyg_restricted_view_modes = variable_get("media_wysiwyg_view_mode_{$type->type}_wysiwyg_restricted_view_modes", array());
       foreach ($wysiwyg_restricted_view_modes as $wysiwyg_restricted_view_mode) {
         db_insert('media_restrict_wysiwyg')
