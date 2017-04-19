@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * @file
+ * Tests for ensuring filters are working properly.
+ */
+
+/**
+ * Defines media macro test cases.
+ */
+class MediaWYSIWYGParagraphFixFilterTest extends MediaWYSIWYGTestHelper {
+
+   protected $default_regexp = '/<p[^>]*><div [^>]*media[^>]*>/i';
+   protected $replace_regexp = '/<div class\="media\-p"><div/i';
+  /**
+   * Provide test information.
+   */
+  public static function getInfo() {
+    return array(
+      'name' => t('Media WYSIWYG Paragraph Filter Test'),
+      'description' => t('Tests that this media filter is working.'),
+      'group' => t('Media WYSIWYG'),
+      'dependencies' => array('token'),
+    );
+  }
+
+  public function setUp() {
+    parent::setUp('token');
+
+    // Create and log in a user.
+    $account = $this->drupalCreateUser(array('create article content', 'administer filters', 'use text format filtered_html'));
+    $this->drupalLogin($account);
+
+    // Enable the media filter for full html.
+    $edit = array(
+      'filters[media_filter][status]' => TRUE,
+      'filters[filter_autop][status]' => FALSE,
+      'filters[filter_url][status]' => FALSE,
+      'filters[filter_html][status]' => FALSE,
+      'filters[filter_htmlcorrector][status]' => FALSE,
+    );
+    $this->drupalPost('admin/config/content/formats/filtered_html', $edit, t('Save configuration'));
+  }
+
+  /**
+   * Test image media overrides.
+   */
+  public function testMediaFilterParagraphFixDefault() {
+
+    $files = $this->drupalGetTestFiles('image');
+    $file = file_save($files[0]);
+
+    // Create a node to test with.
+    $nid = $this->createNode($file->fid);
+
+    // Check without the filter enabled.
+    $this->drupalGet('node/' . $nid);
+    $this->assertPattern($this->default_regexp, t('Nested media DIV tags within paragraphs without filter.'));
+    $this->assertNoPattern($this->replace_regexp, t('No replacement DIV tag found without filter.'));
+
+    // Enable the default P fix filter.
+    $edit = array(
+      'filters[media_filter_paragraph_fix][status]' => TRUE,
+      'filters[media_filter_paragraph_fix][settings][replace]' => FALSE,
+    );
+    $this->drupalPost('admin/config/content/formats/filtered_html', $edit, t('Save configuration'));
+
+    // Retest the content to check nested paragraphs are removed.
+    $nid = $this->createNode($file->fid);
+    $this->drupalGet('node/' . $nid);
+    $this->assertNoPattern($this->default_regexp, t('Nested media DIV tags within paragraphs with filter defaults.'));
+    $this->assertNoPattern($this->replace_regexp, t('No replacement DIV tag found with filter defaults.'));
+
+    // Enable replacement option.
+    $edit = array(
+      'filters[media_filter_paragraph_fix][settings][replace]' => TRUE,
+    );
+    $this->drupalPost('admin/config/content/formats/filtered_html', $edit, t('Save configuration'));
+
+    // Test that the replace text was found.
+    $nid = $this->createNode($file->fid);
+    $this->drupalGet('node/' . $nid);
+    $this->assertNoPattern($this->default_regexp, t('No nested media DIV tags within paragraphs with filter P replacement.'));
+    $this->assertPattern($this->replace_regexp, t('No replacement DIV tag found with filter P replacement.'));
+  }
+
+}

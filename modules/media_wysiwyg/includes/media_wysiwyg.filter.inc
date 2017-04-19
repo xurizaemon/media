@@ -28,18 +28,57 @@ function media_wysiwyg_filter($text, $filter = NULL, $format = NULL, $langcode =
 }
 
 /**
+ * Filter callback to configure media_filter_paragraph_fix filter.
+ */
+function _media_filter_paragraph_fix_settings($form, &$form_state, $filter, $format, $defaults) {
+  $filter->settings += $defaults;
+  $settings['replace'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Replace paragraph tags with DIV.media-p tags'),
+    '#default_value' => $filter->settings['replace'],
+    '#description' => t('Default behaviour is to strip out parent P tags of media elements rather than replacing these.'),
+  );
+  return $settings;
+}
+
+/**
  * Filter callback to remove paragraph tags surrounding embedded media.
  */
-function media_wysiwyg_filter_paragraph_fix($text) {
+function media_wysiwyg_filter_paragraph_fix($text, $filter) {
   $html_dom = filter_dom_load($text);
   foreach ($html_dom->getElementsByTagName('p') as $paragraph) {
     if (preg_match(MEDIA_WYSIWYG_TOKEN_REGEX, $paragraph->nodeValue)) {
-      $sibling = $paragraph->firstChild;
-      do {
-        $next = $sibling->nextSibling;
-        $paragraph->parentNode->insertBefore($sibling, $paragraph);
-      } while ($sibling = $next);
-      $paragraph->parentNode->removeChild($paragraph);
+      if (empty($filter->settings['replace'])) {
+        $sibling = $paragraph->firstChild;
+        do {
+          $next = $sibling->nextSibling;
+          $paragraph->parentNode->insertBefore($sibling, $paragraph);
+        } while ($sibling = $next);
+        $paragraph->parentNode->removeChild($paragraph);
+      }
+      else {
+        // Create a new DIV node and copy over all attributes.
+        $div = $html_dom->createElement("div", $paragraph->nodeValue);
+        $classes = array('media-p');
+        if ($paragraph->hasAttributes()) {
+          foreach ($paragraph->attributes as $attr) {
+            $name = $attr->nodeName;
+            $value = $attr->nodeValue;
+            if (strtolower($name) == 'class') {
+              $classes[] = $value;
+            }
+            else {
+              // Supressing errors with ID attribute or duplicate properties.
+              @$div->setAttribute($name, $value);
+            }
+          }
+        }
+        $div->setAttribute('class', implode(' ', $classes));
+
+        // Switch the P with the DIV node.
+        $paragraph->parentNode->insertBefore($div, $paragraph);
+        $paragraph->parentNode->removeChild($paragraph);
+      }
     }
   }
   $text = filter_dom_serialize($html_dom);
