@@ -57,8 +57,14 @@ function media_wysiwyg_filter_paragraph_fix($text, $filter) {
         $paragraph->parentNode->removeChild($paragraph);
       }
       else {
-        // Create a new DIV node and copy over all attributes.
-        $div = $html_dom->createElement("div", $paragraph->nodeValue);
+        // Clone the P node into a DIV node.
+        $div = $html_dom->createElement('div');
+        $sibling = $paragraph->firstChild;
+        do {
+          $next = $sibling->nextSibling;
+          $div->appendChild($sibling);
+        } while ($sibling = $next);
+
         $classes = array('media-p');
         if ($paragraph->hasAttributes()) {
           foreach ($paragraph->attributes as $attr) {
@@ -75,7 +81,6 @@ function media_wysiwyg_filter_paragraph_fix($text, $filter) {
         }
         $div->setAttribute('class', implode(' ', $classes));
 
-        // Switch the P with the DIV node.
         $paragraph->parentNode->insertBefore($div, $paragraph);
         $paragraph->parentNode->removeChild($paragraph);
       }
