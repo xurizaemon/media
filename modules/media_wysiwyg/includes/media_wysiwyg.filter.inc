@@ -46,6 +46,8 @@ function _media_filter_paragraph_fix_settings($form, &$form_state, $filter, $for
  */
 function media_wysiwyg_filter_paragraph_fix($text, $filter) {
   $html_dom = filter_dom_load($text);
+  // Store Nodes to remove to avoid inferferring with the NodeList iteration.
+  $dom_nodes_to_remove = array();
   foreach ($html_dom->getElementsByTagName('p') as $paragraph) {
     if (preg_match(MEDIA_WYSIWYG_TOKEN_REGEX, $paragraph->nodeValue)) {
       if (empty($filter->settings['replace'])) {
@@ -54,7 +56,7 @@ function media_wysiwyg_filter_paragraph_fix($text, $filter) {
           $next = $sibling->nextSibling;
           $paragraph->parentNode->insertBefore($sibling, $paragraph);
         } while ($sibling = $next);
-        $paragraph->parentNode->removeChild($paragraph);
+        $dom_nodes_to_remove[] = $paragraph;
       }
       else {
         // Clone the P node into a DIV node.
@@ -82,9 +84,12 @@ function media_wysiwyg_filter_paragraph_fix($text, $filter) {
         $div->setAttribute('class', implode(' ', $classes));
 
         $paragraph->parentNode->insertBefore($div, $paragraph);
-        $paragraph->parentNode->removeChild($paragraph);
+        $dom_nodes_to_remove[] = $paragraph;
       }
     }
+  }
+  foreach ($dom_nodes_to_remove as $paragraph) {
+    $paragraph->parentNode->removeChild($paragraph);
   }
   $text = filter_dom_serialize($html_dom);
   return $text;
