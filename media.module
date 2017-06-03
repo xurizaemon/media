@@ -1137,7 +1137,9 @@ function media_get_thumbnail_preview($file, $link = FALSE, $view_mode = 'preview
  */
 function media_file_validate_types($file, $types) {
   $errors = array();
-  if (!in_array(file_get_type($file), $types)) {
+
+  $file_candidates = array_keys(file_entity_get_filetype_candidates($file));
+  if (!array_intersect($file_candidates, $types)) {
     $errors[] = t('Only the following types of files are allowed to be uploaded: %types-allowed', array('%types-allowed' => implode(', ', $types)));
   }
 
