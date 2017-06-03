@@ -389,7 +389,7 @@ function media_wysiwyg_allowed_attributes() {
     'data-delta',
   ));
   drupal_alter('media_wysiwyg_allowed_attributes', $allowed_attributes);
-  return $allowed_attributes;  
+  return $allowed_attributes;
 }
 
 /**
@@ -603,7 +603,7 @@ function media_wysiwyg_form_file_entity_file_type_form_alter(&$form, &$form_stat
   if (empty($form_state['build_info']['args'][0])) {
     return;
   }
-  
+
   $options = array();
 
   // Add an option allowing users not to use a view mode.
