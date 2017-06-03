@@ -137,6 +137,11 @@ function media_field_widget_form(&$form, &$form_state, $field, $instance, $langc
   } elseif ($element['#entity_type'] == 'field_collection_item' && !empty($form['#entity']) && property_exists($form['#entity'], 'language')) {
     $element['#media_parent_entity_form_langcode'] = $form['#entity']->language;
   }
+  else if ($element['#entity_type'] == 'paragraphs_item' && !empty($form['#entity'])) {
+    $host = $element['#entity']->hostEntity();
+    $element['#media_parent_entity_form_langcode'] = $host->language;
+    $element['#media_parent_entity_source_langcode'] = $host->language;
+  }
 
   // Add image field specific validators.
   if ($field['type'] == 'image') {
