@@ -1221,6 +1221,7 @@ function media_set_browser_params() {
       'fid',
       'id',
       'multiselect',
+      'field',
       'options',
       'plugins',
       'render',
