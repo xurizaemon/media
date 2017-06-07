@@ -557,10 +557,14 @@ function theme_media_widget_multiple($variables) {
     );
   }
 
+  $table = array('header' => $headers, 'rows' => $rows, 'attributes' => array('id' => $table_id));
+
+  drupal_alter('media_widget_multiple', $table, $element);
+
   drupal_add_tabledrag($table_id, 'order', 'sibling', $weight_class);
 
   $output = '';
-  $output = empty($rows) ? '' : theme('table', array('header' => $headers, 'rows' => $rows, 'attributes' => array('id' => $table_id)));
+  $output = empty($rows) ? '' : theme('table', $table);
   $output .= drupal_render_children($element);
   return $output;
 }

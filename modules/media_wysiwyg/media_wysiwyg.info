@@ -12,5 +12,6 @@ test_dependencies[] = wysiwyg
 files[] = media_wysiwyg.test
 files[] = tests/media_wysiwyg.file_usage.test
 files[] = tests/media_wysiwyg.macro.test
+files[] = tests/media_wysiwyg.paragraph_fix_filter.test
 
 configure = admin/config/media/browser

@@ -87,8 +87,8 @@ function media_update_dependencies() {
     'rules' => 7205,
   );
   // Those updates require {file_type} table created.
-  $dependencies['media'][7204] = array(
-    'file_entity' => 7201,
+  $dependencies['media'][7200] = array(
+    'file_entity' => 7207,
   );
   // Require {file_type}.mimetypes column before updating them.
   $dependencies['media'][7208] = array(
