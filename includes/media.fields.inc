@@ -140,7 +140,7 @@ function media_field_widget_form(&$form, &$form_state, $field, $instance, $langc
   }
   else if ($element['#entity_type'] == 'paragraphs_item' && !empty($form['#entity'])) {
     $host = $element['#entity']->hostEntity();
-    if (isset($host->$language)) {
+    if (isset($host->language)) {
       $element['#media_parent_entity_form_langcode'] = $host->language;
       $element['#media_parent_entity_source_langcode'] = $host->language;
     }
