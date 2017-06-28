@@ -1214,7 +1214,7 @@ function media_set_browser_params() {
 
     // Filter out everything except a whitelist of known safe options.
     $safe_options = array(
-      'activePlugins',
+      'enabledPlugins',
       'fid',
       'id',
       'multiselect',
