@@ -281,7 +281,7 @@ function media_wysiwyg_form_media_admin_config_browser_alter(&$form, &$form_stat
 
   $options = array();
   foreach(field_info_field_types() as $key => $type) {
-    $options[$key] = $type['label'];
+    $options[$key] = (!empty($type['label']))? $type['label'] : ucfirst(str_replace("_"," ",$key));
   }
   asort($options);
   $form['wysiwyg']['media_wysiwyg_wysiwyg_override_field_types'] = array(
